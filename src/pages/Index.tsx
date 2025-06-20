@@ -1,13 +1,51 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState } from "react";
+import { Sidebar } from "@/components/dashboard/Sidebar";
+import { Header } from "@/components/dashboard/Header";
+import { StatsCards } from "@/components/dashboard/StatsCards";
+import { KanbanBoard } from "@/components/dashboard/KanbanBoard";
+import { ActivityTimeline } from "@/components/dashboard/ActivityTimeline";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <SidebarProvider>
+      <div className="min-h-screen bg-slate-50 w-full">
+        <div className="flex w-full">
+          <Sidebar />
+          <div className="flex-1 flex flex-col">
+            <Header />
+            <main className="flex-1 p-6 space-y-6">
+              {/* Welcome Section */}
+              <div className="mb-8">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  Welcome back, Alex 👋
+                </h1>
+                <p className="text-gray-600">
+                  Here's what's happening with your outreach today
+                </p>
+              </div>
+
+              {/* Stats Cards */}
+              <StatsCards />
+
+              {/* Main Content Grid */}
+              <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                {/* Kanban Board */}
+                <div className="xl:col-span-2">
+                  <KanbanBoard />
+                </div>
+
+                {/* Activity Timeline */}
+                <div className="xl:col-span-1">
+                  <ActivityTimeline />
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 
