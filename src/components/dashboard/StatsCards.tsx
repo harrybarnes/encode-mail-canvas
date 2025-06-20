@@ -1,33 +1,33 @@
 
-import { User, Bell, Calendar, Search } from "lucide-react";
+import { Target, Send, Mail, TrendingUp } from "lucide-react";
 
 const stats = [
   {
-    title: "Total Contacts",
-    value: "2,847",
-    change: "+12%",
-    icon: User,
+    title: "Active Campaigns",
+    value: "12",
+    change: "+3",
+    icon: Target,
     gradient: "from-blue-500 to-blue-600",
   },
   {
-    title: "Active Deals",
-    value: "47",
-    change: "+8%",
-    icon: Bell,
+    title: "Emails Sent",
+    value: "2,847",
+    change: "+156",
+    icon: Send,
     gradient: "from-purple-500 to-purple-600",
   },
   {
-    title: "Tasks Due Today",
-    value: "12",
-    change: "-2%",
-    icon: Calendar,
+    title: "Replies Received",
+    value: "127",
+    change: "+18",
+    icon: Mail,
     gradient: "from-green-500 to-green-600",
   },
   {
-    title: "Monthly Revenue",
-    value: "$84,200",
-    change: "+24%",
-    icon: Search,
+    title: "Reply Rate",
+    value: "4.5%",
+    change: "+0.8%",
+    icon: TrendingUp,
     gradient: "from-orange-500 to-orange-600",
   },
 ];
@@ -44,13 +44,7 @@ export function StatsCards() {
             <div className={`p-3 rounded-lg bg-gradient-to-r ${stat.gradient} shadow-lg`}>
               <stat.icon className="w-6 h-6 text-white" />
             </div>
-            <span
-              className={`text-sm font-medium px-2 py-1 rounded-full ${
-                stat.change.startsWith("+")
-                  ? "text-green-700 bg-green-100"
-                  : "text-red-700 bg-red-100"
-              }`}
-            >
+            <span className="text-sm font-medium px-2 py-1 rounded-full text-green-700 bg-green-100">
               {stat.change}
             </span>
           </div>

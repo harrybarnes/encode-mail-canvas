@@ -2,48 +2,50 @@
 const activities = [
   {
     id: 1,
-    user: "Alex Johnson",
-    action: "contacted",
-    target: "Acme Corp",
-    time: "2 hours ago",
-    avatar: "AJ",
-    type: "contact",
+    user: "System",
+    action: "received reply from",
+    target: "sarah@techstartup.com",
+    time: "2 minutes ago",
+    avatar: "📧",
+    type: "reply",
+    campaign: "Product Demo Outreach"
   },
   {
     id: 2,
-    user: "Sarah Wilson",
-    action: "closed deal",
-    target: "Tech Solutions - $25,000",
-    time: "4 hours ago",
-    avatar: "SW",
-    type: "deal",
+    user: "You",
+    action: "sent email to",
+    target: "john@enterprise.com",
+    time: "15 minutes ago",
+    avatar: "📤",
+    type: "sent",
+    campaign: "Partnership Proposals"
   },
   {
     id: 3,
-    user: "Mike Davis",
-    action: "sent proposal",
-    target: "Global Industries",
-    time: "6 hours ago",
-    avatar: "MD",
-    type: "proposal",
+    user: "AI Assistant",
+    action: "optimized email for",
+    target: "Investor Outreach Campaign",
+    time: "1 hour ago",
+    avatar: "🤖",
+    type: "optimization",
   },
   {
     id: 4,
-    user: "Lisa Chen",
-    action: "scheduled call",
-    target: "StartupX",
-    time: "8 hours ago",
-    avatar: "LC",
-    type: "calendar",
+    user: "You",
+    action: "created new campaign",
+    target: "Customer Success Follow-up",
+    time: "3 hours ago",
+    avatar: "🎯",
+    type: "campaign",
   },
   {
     id: 5,
-    user: "Tom Brown",
-    action: "updated contact",
-    target: "Enterprise LLC",
+    user: "System",
+    action: "Gmail connected successfully",
+    target: "OAuth authentication complete",
     time: "1 day ago",
-    avatar: "TB",
-    type: "contact",
+    avatar: "🔗",
+    type: "system",
   },
 ];
 
@@ -55,7 +57,7 @@ export function ActivityTimeline() {
       <div className="space-y-4">
         {activities.map((activity, index) => (
           <div key={activity.id} className="flex items-start gap-3 group">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-lg flex-shrink-0">
               {activity.avatar}
             </div>
             
@@ -66,14 +68,18 @@ export function ActivityTimeline() {
               </div>
               
               <p className="text-sm text-gray-600 mb-1">{activity.target}</p>
+              {activity.campaign && (
+                <p className="text-xs text-blue-600 mb-1">📋 {activity.campaign}</p>
+              )}
               <p className="text-xs text-gray-500">{activity.time}</p>
             </div>
             
             <div className={`w-3 h-3 rounded-full flex-shrink-0 mt-2 ${
-              activity.type === "deal" ? "bg-green-500" :
-              activity.type === "contact" ? "bg-blue-500" :
-              activity.type === "proposal" ? "bg-yellow-500" :
-              "bg-purple-500"
+              activity.type === "reply" ? "bg-green-500" :
+              activity.type === "sent" ? "bg-blue-500" :
+              activity.type === "optimization" ? "bg-purple-500" :
+              activity.type === "campaign" ? "bg-orange-500" :
+              "bg-gray-500"
             }`} />
           </div>
         ))}

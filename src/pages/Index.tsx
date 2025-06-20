@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { Header } from "@/components/dashboard/Header";
 import { StatsCards } from "@/components/dashboard/StatsCards";
-import { KanbanBoard } from "@/components/dashboard/KanbanBoard";
+import { CampaignPipeline } from "@/components/dashboard/CampaignPipeline";
 import { ActivityTimeline } from "@/components/dashboard/ActivityTimeline";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
@@ -22,7 +22,7 @@ const Index = () => {
                   Welcome back, Alex 👋
                 </h1>
                 <p className="text-gray-600">
-                  Here's what's happening with your outreach today
+                  Track your cold email campaigns and optimize your outreach strategy
                 </p>
               </div>
 
@@ -31,9 +31,9 @@ const Index = () => {
 
               {/* Main Content Grid */}
               <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                {/* Kanban Board */}
+                {/* Campaign Pipeline */}
                 <div className="xl:col-span-2">
-                  <KanbanBoard />
+                  <CampaignPipeline />
                 </div>
 
                 {/* Activity Timeline */}

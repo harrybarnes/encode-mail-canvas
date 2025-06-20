@@ -2,10 +2,13 @@
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
-  User,
-  Bell,
-  Calendar,
-  Search
+  LayoutDashboard,
+  Mail,
+  Users,
+  BarChart3,
+  Settings,
+  Send,
+  Target
 } from "lucide-react";
 import {
   Sidebar as SidebarUI,
@@ -21,22 +24,22 @@ import {
 } from "@/components/ui/sidebar";
 
 const items = [
-  { title: "Dashboard", url: "/", icon: Search },
-  { title: "Contacts", url: "/contacts", icon: User },
-  { title: "Deals", url: "/deals", icon: Bell },
-  { title: "Tasks", url: "/tasks", icon: Calendar },
-  { title: "Calendar", url: "/calendar", icon: Calendar },
-  { title: "Reports", url: "/reports", icon: Search },
-  { title: "Settings", url: "/settings", icon: User },
+  { title: "Dashboard", url: "/", icon: LayoutDashboard },
+  { title: "Campaigns", url: "/campaigns", icon: Target },
+  { title: "Contacts", url: "/contacts", icon: Users },
+  { title: "Outbox", url: "/outbox", icon: Send },
+  { title: "Inbox", url: "/inbox", icon: Mail },
+  { title: "Analytics", url: "/analytics", icon: BarChart3 },
+  { title: "Settings", url: "/settings", icon: Settings },
 ];
 
 export function Sidebar() {
-  const { collapsed } = useSidebar();
+  const { state } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
+  const collapsed = state === "collapsed";
 
   const isActive = (path: string) => currentPath === path;
-  const isExpanded = items.some((i) => isActive(i.url));
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive 
@@ -46,15 +49,12 @@ export function Sidebar() {
   return (
     <SidebarUI
       className={`${collapsed ? "w-14" : "w-64"} border-r border-gray-200 bg-white transition-all duration-300`}
-      collapsible
+      collapsible="icon"
     >
       <SidebarTrigger className="m-2 self-end hover:bg-gray-100" />
 
       <SidebarContent className="px-3">
-        <SidebarGroup
-          open={isExpanded}
-          onOpenChange={() => {}}
-        >
+        <SidebarGroup>
           <SidebarGroupLabel className="text-gray-500 font-medium mb-2">
             {!collapsed && "Navigation"}
           </SidebarGroupLabel>

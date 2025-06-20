@@ -17,7 +17,7 @@ export function Header() {
         <div className="flex items-center gap-4">
           <SidebarTrigger className="hover:bg-gray-100" />
           <div className="font-bold text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            EncodeMail
+            InboxIntel
           </div>
         </div>
 
@@ -27,7 +27,7 @@ export function Header() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
               type="text"
-              placeholder="Search contacts, deals, or tasks..."
+              placeholder="Search campaigns, contacts, or emails..."
               className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             />
           </div>
@@ -38,7 +38,7 @@ export function Header() {
           <Button variant="ghost" size="sm" className="relative hover:bg-gray-100">
             <Bell className="w-5 h-5" />
             <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-              3
+              2
             </span>
           </Button>
 
@@ -52,6 +52,7 @@ export function Header() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem>Gmail Connection</DropdownMenuItem>
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Sign out</DropdownMenuItem>
             </DropdownMenuContent>
