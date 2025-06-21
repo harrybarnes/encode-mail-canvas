@@ -1,12 +1,9 @@
-
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Target, Clock, Send, MessageSquare, CheckCircle } from "lucide-react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { NewCampaignForm } from "@/components/forms/NewCampaignForm";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Campaign {
-  id: number;
+  id: string;
   name: string;
   stage: string;
   sent: number;
@@ -15,49 +12,6 @@ interface Campaign {
   goal: string;
   progress: number;
 }
-
-const initialCampaigns = [
-  {
-    id: 1,
-    name: "Product Demo Outreach",
-    stage: "active",
-    sent: 45,
-    replies: 8,
-    status: "In Progress",
-    goal: "Get 10 product demos",
-    progress: 80,
-  },
-  {
-    id: 2,
-    name: "Partnership Proposals",
-    stage: "draft",
-    sent: 0,
-    replies: 0,
-    status: "Draft",
-    goal: "Secure 3 partnerships",
-    progress: 20,
-  },
-  {
-    id: 3,
-    name: "Investor Outreach",
-    stage: "paused",
-    sent: 120,
-    replies: 15,
-    status: "Paused",
-    goal: "Connect with 20 investors",
-    progress: 60,
-  },
-  {
-    id: 4,
-    name: "Customer Success",
-    stage: "completed",
-    sent: 200,
-    replies: 45,
-    status: "Completed",
-    goal: "Improve retention by 15%",
-    progress: 100,
-  },
-];
 
 const getStageIcon = (stage: string) => {
   switch (stage) {
@@ -79,49 +33,45 @@ const getStageColor = (stage: string) => {
   }
 };
 
-export function CampaignPipeline() {
-  const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+export function CampaignPipeline({ campaigns, isLoading }: { campaigns: Campaign[], isLoading?: boolean }) {
   const navigate = useNavigate();
 
-  const handleCreateCampaign = (campaignData: { name: string; goal: string; audience: string }) => {
-    const newCampaign: Campaign = {
-      id: Math.max(...campaigns.map(c => c.id)) + 1,
-      name: campaignData.name,
-      stage: "draft",
-      sent: 0,
-      replies: 0,
-      status: "Draft",
-      goal: campaignData.goal,
-      progress: 0,
-    };
-
-    setCampaigns([newCampaign, ...campaigns]);
-    setIsDialogOpen(false);
-  };
-
-  const handleCampaignClick = (campaignId: number) => {
-    console.log(`Navigating to campaign ${campaignId}`);
+  const handleCampaignClick = (campaignId: string) => {
     navigate(`/campaign/${campaignId}`);
   };
+  
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div className="flex items-center justify-between mb-6">
+          <Skeleton className="h-8 w-40" />
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <div className="space-y-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="p-4 border border-gray-200 rounded-lg">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <Skeleton className="w-10 h-10 rounded-lg" />
+                  <div>
+                    <Skeleton className="h-5 w-48 mb-2" />
+                    <Skeleton className="h-4 w-32" />
+                  </div>
+                </div>
+                <Skeleton className="w-20 h-6 rounded-full" />
+              </div>
+              <Skeleton className="h-2 w-full rounded-full" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-gray-900">Campaign Pipeline</h2>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <button className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all">
-              New Campaign
-            </button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
-            <NewCampaignForm
-              onSubmit={handleCreateCampaign}
-              onCancel={() => setIsDialogOpen(false)}
-            />
-          </DialogContent>
-        </Dialog>
       </div>
 
       <div className="space-y-4">

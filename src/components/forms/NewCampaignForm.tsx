@@ -1,94 +1,118 @@
-
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useCreateCampaign } from "@/hooks/useCampaigns";
+import { toast } from "sonner";
+
+
+const campaignFormSchema = z.object({
+  name: z.string().min(3, "Campaign name must be at least 3 characters."),
+  goal: z.string().min(5, "Campaign goal must be at least 5 characters."),
+  audience_description: z.string().min(10, "Audience description must be at least 10 characters."),
+});
+
+type CampaignFormValues = z.infer<typeof campaignFormSchema>;
 
 interface NewCampaignFormProps {
-  onSubmit: (campaignData: {
-    name: string;
-    goal: string;
-    audience: string;
-  }) => void;
-  onCancel: () => void;
+  onFormSubmit: () => void;
 }
 
-export function NewCampaignForm({ onSubmit, onCancel }: NewCampaignFormProps) {
-  const [name, setName] = useState("");
-  const [goal, setGoal] = useState("");
-  const [audience, setAudience] = useState("");
+export function NewCampaignForm({ onFormSubmit }: NewCampaignFormProps) {
+  const createCampaignMutation = useCreateCampaign();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (name.trim() && goal.trim() && audience.trim()) {
-      onSubmit({ name: name.trim(), goal: goal.trim(), audience: audience.trim() });
-    }
+  const form = useForm<CampaignFormValues>({
+    resolver: zodResolver(campaignFormSchema),
+    defaultValues: {
+      name: "",
+      goal: "",
+      audience_description: "",
+    },
+  });
+
+  const onSubmit = (data: CampaignFormValues) => {
+    createCampaignMutation.mutate(data, {
+      onSuccess: () => {
+        toast.success("Campaign created successfully!");
+        onFormSubmit(); // Close the dialog on success
+      },
+      onError: (error) => {
+        toast.error("Failed to create campaign", {
+          description: error.message,
+        });
+      }
+    });
   };
 
-  const isValid = name.trim() && goal.trim() && audience.trim();
-
   return (
-    <div className="space-y-6">
+    <>
       <DialogHeader>
         <DialogTitle className="text-xl font-bold text-gray-900">
           Create New Campaign
         </DialogTitle>
       </DialogHeader>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="campaign-name">Campaign Name</Label>
-          <Input
-            id="campaign-name"
-            placeholder="e.g., Product Demo Outreach"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full"
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Campaign Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., Product Demo Outreach" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="campaign-goal">Campaign Goal</Label>
-          <Input
-            id="campaign-goal"
-            placeholder="e.g., Get 10 product demos"
-            value={goal}
-            onChange={(e) => setGoal(e.target.value)}
-            className="w-full"
+          <FormField
+            control={form.control}
+            name="goal"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Campaign Goal</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., Get 10 product demos" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="campaign-audience">Target Audience</Label>
-          <Textarea
-            id="campaign-audience"
-            placeholder="e.g., B2B SaaS founders with 10-50 employees, looking to improve their sales process"
-            value={audience}
-            onChange={(e) => setAudience(e.target.value)}
-            className="w-full min-h-[100px]"
+          <FormField
+            control={form.control}
+            name="audience_description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Target Audience Description</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="e.g., B2B SaaS founders with 10-50 employees..."
+                    className="resize-none"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-
-        <div className="flex gap-3 pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onCancel}
-            className="flex-1"
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            disabled={!isValid}
-            className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-          >
-            Create Campaign
-          </Button>
-        </div>
-      </form>
-    </div>
+          <DialogFooter className="pt-4">
+            <DialogClose asChild>
+                <Button type="button" variant="outline">
+                    Cancel
+                </Button>
+            </DialogClose>
+            <Button type="submit" disabled={createCampaignMutation.isPending}>
+              {createCampaignMutation.isPending ? "Creating..." : "Create Campaign"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </Form>
+    </>
   );
 }
