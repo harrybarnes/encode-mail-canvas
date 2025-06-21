@@ -3,7 +3,7 @@ import { useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, Mail, Reply, TrendingUp } from "lucide-react";
+import { CalendarDays, Mail, Reply, TrendingUp, Play, Pause } from "lucide-react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 interface Lead {
@@ -47,20 +47,41 @@ const mockActivityLog = [
   },
   {
     id: 3,
+    type: "campaign",
+    message: "Campaign paused by user",
+    timestamp: "2024-01-21 13:00:00",
+    recipient: "Campaign management"
+  },
+  {
+    id: 4,
+    type: "campaign",
+    message: "Campaign resumed and is now active",
+    timestamp: "2024-01-21 12:30:00",
+    recipient: "Campaign management"
+  },
+  {
+    id: 5,
     type: "sent",
     message: "Email sent to Mike Chen at InnovateLabs",
     timestamp: "2024-01-21 12:15:00",
     recipient: "mike.chen@innovatelabs.com"
   },
   {
-    id: 4,
+    id: 6,
     type: "reply",
     message: "Reply received from Lisa Park at GrowthCo",
     timestamp: "2024-01-21 11:30:00",
     recipient: "lisa.park@growthco.com"
   },
   {
-    id: 5,
+    id: 7,
+    type: "campaign",
+    message: "Campaign launched successfully",
+    timestamp: "2024-01-21 10:00:00",
+    recipient: "Campaign management"
+  },
+  {
+    id: 8,
     type: "sent",
     message: "Email sent to David Wilson at ScaleTech",
     timestamp: "2024-01-21 10:45:00",
@@ -97,7 +118,7 @@ export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
             <div>
               <CardTitle>Campaign Execution Plan</CardTitle>
               <CardDescription>
-                Your campaign is now live and running according to schedule
+                {campaign.stage === "active" ? "Your campaign is now live and running according to schedule" : "Your campaign is paused - resume to continue sending emails"}
               </CardDescription>
             </div>
           </div>
@@ -120,7 +141,7 @@ export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
         </CardContent>
       </Card>
 
-      {/* Activity Chart */}
+      {/* Activity Chart - Full Width */}
       <Card>
         <CardHeader>
           <CardTitle>Campaign Performance</CardTitle>
@@ -128,37 +149,41 @@ export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
             Daily emails sent and replies received over time
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <ChartContainer config={chartConfig} className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={mockActivityData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="date" 
-                  tickFormatter={(value) => new Date(value).toLocaleDateString()}
-                />
-                <YAxis />
-                <ChartTooltip 
-                  content={<ChartTooltipContent />}
-                  labelFormatter={(value) => new Date(value).toLocaleDateString()}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="sent" 
-                  stroke={chartConfig.sent.color}
-                  strokeWidth={2}
-                  dot={{ fill: chartConfig.sent.color }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="replies" 
-                  stroke={chartConfig.replies.color}
-                  strokeWidth={2}
-                  dot={{ fill: chartConfig.replies.color }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </ChartContainer>
+        <CardContent className="p-0">
+          <div className="h-[400px] w-full">
+            <ChartContainer config={chartConfig} className="h-full w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={mockActivityData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis 
+                    dataKey="date" 
+                    tickFormatter={(value) => new Date(value).toLocaleDateString()}
+                  />
+                  <YAxis />
+                  <ChartTooltip 
+                    content={<ChartTooltipContent />}
+                    labelFormatter={(value) => new Date(value).toLocaleDateString()}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="sent" 
+                    stroke={chartConfig.sent.color}
+                    strokeWidth={3}
+                    dot={{ fill: chartConfig.sent.color, strokeWidth: 2, r: 6 }}
+                    activeDot={{ r: 8 }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="replies" 
+                    stroke={chartConfig.replies.color}
+                    strokeWidth={3}
+                    dot={{ fill: chartConfig.replies.color, strokeWidth: 2, r: 6 }}
+                    activeDot={{ r: 8 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+          </div>
         </CardContent>
       </Card>
 
@@ -172,7 +197,7 @@ export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
             <div>
               <CardTitle>Recent Activity</CardTitle>
               <CardDescription>
-                Latest emails sent and replies received
+                Latest emails sent, replies received, and campaign actions
               </CardDescription>
             </div>
           </div>
@@ -186,9 +211,17 @@ export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
                     <div className="p-2 bg-blue-100 rounded-lg">
                       <Mail className="w-4 h-4 text-blue-600" />
                     </div>
-                  ) : (
+                  ) : activity.type === "reply" ? (
                     <div className="p-2 bg-green-100 rounded-lg">
                       <Reply className="w-4 h-4 text-green-600" />
+                    </div>
+                  ) : (
+                    <div className="p-2 bg-orange-100 rounded-lg">
+                      {activity.message.includes("paused") ? (
+                        <Pause className="w-4 h-4 text-orange-600" />
+                      ) : (
+                        <Play className="w-4 h-4 text-orange-600" />
+                      )}
                     </div>
                   )}
                 </div>
@@ -197,8 +230,14 @@ export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
                   <p className="text-sm text-gray-600">{activity.recipient}</p>
                 </div>
                 <div className="flex-shrink-0">
-                  <Badge variant={activity.type === "sent" ? "secondary" : "default"}>
-                    {activity.type === "sent" ? "Sent" : "Reply"}
+                  <Badge variant={
+                    activity.type === "sent" ? "secondary" : 
+                    activity.type === "reply" ? "default" : 
+                    "outline"
+                  }>
+                    {activity.type === "sent" ? "Sent" : 
+                     activity.type === "reply" ? "Reply" : 
+                     "Campaign"}
                   </Badge>
                   <p className="text-xs text-gray-500 mt-1">
                     {new Date(activity.timestamp).toLocaleTimeString()}

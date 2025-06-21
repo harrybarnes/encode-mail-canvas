@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Target, Users, Clock, Send, Mail, Edit, Save, X, Rocket, Pause, Loader, Check, AlertCircle } from "lucide-react";
@@ -195,6 +194,19 @@ export default function CampaignDetails() {
     });
   };
 
+  const resumeCampaign = () => {
+    setCampaign(prev => prev ? { 
+      ...prev, 
+      stage: "active", 
+      status: "In Progress"
+    } : null);
+    
+    toast({
+      title: "Campaign Resumed",
+      description: "Your campaign is now active and running again.",
+    });
+  };
+
   return (
     <TooltipProvider>
       <SidebarProvider>
@@ -267,6 +279,12 @@ export default function CampaignDetails() {
                         <Button onClick={pauseCampaign} variant="outline">
                           <Pause className="w-4 h-4 mr-2" />
                           Pause Campaign
+                        </Button>
+                      )}
+                      {campaign.stage === "paused" && (
+                        <Button onClick={resumeCampaign} className="bg-green-600 hover:bg-green-700">
+                          <Rocket className="w-4 h-4 mr-2" />
+                          Resume Campaign
                         </Button>
                       )}
                     </div>
@@ -416,8 +434,8 @@ export default function CampaignDetails() {
                   </div>
                 )}
 
-                {/* Campaign Dashboard for Active Campaigns */}
-                {campaign.stage === "active" && (
+                {/* Campaign Dashboard for Active and Paused Campaigns */}
+                {(campaign.stage === "active" || campaign.stage === "paused") && (
                   <CampaignDashboard campaign={campaign} leads={leads} />
                 )}
 
