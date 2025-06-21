@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Target, Users, Clock, Send, Mail, Edit, Save, X, Rocket, Pause, Loader, Check, AlertCircle, Trash2 } from "lucide-react";
@@ -248,38 +247,8 @@ export default function CampaignDetails() {
     if (campaign.stage === "draft") {
       return (
         <>
-          {/* Launch Requirements or Launching Animation */}
-          {isLaunching ? (
-            <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 text-center">
-              <div className="flex flex-col items-center space-y-4">
-                <Loader className="w-16 h-16 text-blue-500 animate-spin" />
-                <div className="space-y-2">
-                  <h3 className="text-xl font-bold text-gray-900">Launching Your Campaign...</h3>
-                  <div className="relative h-20 overflow-hidden">
-                    <div 
-                      className="absolute w-full transition-transform duration-500 ease-in-out space-y-1"
-                      style={{ transform: `translateY(-${currentTaskIndex * 24}px)` }}
-                    >
-                      {launchTasks.map((task, index) => (
-                        <p 
-                          key={index}
-                          className={`text-sm transition-opacity duration-300 ${
-                            index === currentTaskIndex 
-                              ? 'text-blue-600 font-medium opacity-100' 
-                              : index < currentTaskIndex 
-                                ? 'text-green-600 opacity-60' 
-                                : 'text-gray-400 opacity-40'
-                          }`}
-                        >
-                          {index <= currentTaskIndex ? '✓' : '○'} {task}
-                        </p>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
+          {/* Launch Requirements - Only show when NOT launching */}
+          {!isLaunching && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <h4 className="font-medium text-blue-900 mb-3">Ready to Launch?</h4>
               <div className="space-y-2 text-sm">
@@ -659,7 +628,7 @@ export default function CampaignDetails() {
                   </div>
                 </div>
 
-                {/* Launching Animation */}
+                {/* Launching Animation - Only show when launching */}
                 {isLaunching && (
                   <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 text-center">
                     <div className="flex flex-col items-center space-y-4">
