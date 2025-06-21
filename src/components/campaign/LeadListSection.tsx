@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Users, Sparkles, Edit, Save, X, Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,7 @@ interface Lead {
 }
 
 interface Campaign {
-  id: number;
+  id: string;
   audience: string;
 }
 
