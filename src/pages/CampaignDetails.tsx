@@ -66,6 +66,15 @@ const mockCampaigns = [
   },
 ];
 
+const launchTasks = [
+  "Validating email templates",
+  "Preparing lead list",
+  "Setting up delivery schedule",
+  "Initializing tracking systems",
+  "Starting email sequence",
+  "Campaign launched successfully!"
+];
+
 export default function CampaignDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -81,6 +90,7 @@ export default function CampaignDetails() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [hasEmailTemplate, setHasEmailTemplate] = useState(false);
   const [isLaunching, setIsLaunching] = useState(false);
+  const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
 
   if (!campaign) {
     return (
@@ -184,9 +194,13 @@ export default function CampaignDetails() {
 
   const launchCampaign = async () => {
     setIsLaunching(true);
+    setCurrentTaskIndex(0);
     
-    // Simulate campaign launch process
-    await new Promise(resolve => setTimeout(resolve, 4000));
+    // Animate through tasks one by one
+    for (let i = 0; i < launchTasks.length; i++) {
+      setCurrentTaskIndex(i);
+      await new Promise(resolve => setTimeout(resolve, 800));
+    }
     
     setCampaign(prev => prev ? { 
       ...prev, 
@@ -247,33 +261,6 @@ export default function CampaignDetails() {
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Back to Dashboard
                   </Button>
-                  
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50">
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Delete Campaign
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle className="text-red-600">Delete Campaign</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Are you absolutely sure you want to delete "{campaign.name}"? This action cannot be undone. 
-                          All campaign data, email templates, lead lists, and analytics will be permanently removed.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction 
-                          onClick={handleDeleteCampaign}
-                          className="bg-red-600 hover:bg-red-700"
-                        >
-                          Yes, Delete Campaign
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
                 </div>
 
                 {/* Campaign Header */}
@@ -282,6 +269,31 @@ export default function CampaignDetails() {
                     <div>
                       <div className="flex items-center gap-3 mb-2">
                         <h1 className="text-3xl font-bold text-gray-900">{campaign.name}</h1>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50 p-2">
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle className="text-red-600">Delete Campaign</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you absolutely sure you want to delete "{campaign.name}"? This action cannot be undone. 
+                                All campaign data, email templates, lead lists, and analytics will be permanently removed.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction 
+                                onClick={handleDeleteCampaign}
+                                className="bg-red-600 hover:bg-red-700"
+                              >
+                                Yes, Delete Campaign
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStageColor(campaign.stage)}`}>
                           {campaign.status}
                         </span>
@@ -351,19 +363,23 @@ export default function CampaignDetails() {
                         )}
                       </div>
                       {isEditingGoal ? (
-                        <div className="flex gap-2">
+                        <div className="space-y-2">
                           <Input
                             value={draftGoal}
                             onChange={(e) => setDraftGoal(e.target.value)}
-                            className="flex-1"
+                            className="w-full"
                             placeholder="Enter campaign goal..."
                           />
-                          <Button onClick={saveGoal} size="sm" className="bg-green-600 hover:bg-green-700">
-                            <Save className="w-4 h-4" />
-                          </Button>
-                          <Button onClick={cancelGoalEdit} size="sm" variant="outline">
-                            <X className="w-4 h-4" />
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button onClick={saveGoal} size="sm" className="bg-green-600 hover:bg-green-700">
+                              <Save className="w-4 h-4 mr-2" />
+                              Save
+                            </Button>
+                            <Button onClick={cancelGoalEdit} size="sm" variant="outline">
+                              <X className="w-4 h-4 mr-2" />
+                              Cancel
+                            </Button>
+                          </div>
                         </div>
                       ) : (
                         <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">{campaign.goal}</p>
@@ -471,11 +487,26 @@ export default function CampaignDetails() {
                       <Loader className="w-16 h-16 text-blue-500 animate-spin" />
                       <div className="space-y-2">
                         <h3 className="text-xl font-bold text-gray-900">Launching Your Campaign...</h3>
-                        <div className="space-y-1 text-sm text-gray-600">
-                          <p>✓ Validating email templates</p>
-                          <p>✓ Preparing lead list ({leads.length} contacts)</p>
-                          <p>✓ Setting up delivery schedule</p>
-                          <p>✓ Initializing tracking systems</p>
+                        <div className="relative h-20 overflow-hidden">
+                          <div 
+                            className="absolute w-full transition-transform duration-500 ease-in-out space-y-1"
+                            style={{ transform: `translateY(-${currentTaskIndex * 24}px)` }}
+                          >
+                            {launchTasks.map((task, index) => (
+                              <p 
+                                key={index}
+                                className={`text-sm transition-opacity duration-300 ${
+                                  index === currentTaskIndex 
+                                    ? 'text-blue-600 font-medium opacity-100' 
+                                    : index < currentTaskIndex 
+                                      ? 'text-green-600 opacity-60' 
+                                      : 'text-gray-400 opacity-40'
+                                }`}
+                              >
+                                {index <= currentTaskIndex ? '✓' : '○'} {task}
+                              </p>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </div>

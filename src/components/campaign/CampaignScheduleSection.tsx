@@ -48,10 +48,19 @@ export function CampaignScheduleSection({ startDate, endDate, onScheduleUpdate }
 
   const handleStartDateChange = (newStartDate: Date | undefined) => {
     setDraftStartDate(newStartDate);
-    // Auto-update end date to 7 days after start date
-    if (newStartDate) {
+    // Auto-update end date to 7 days after start date if end date is before new start date
+    if (newStartDate && draftEndDate && draftEndDate <= newStartDate) {
       const endDateObj = new Date(newStartDate.getTime() + 7 * 24 * 60 * 60 * 1000);
       setDraftEndDate(endDateObj);
+    }
+  };
+
+  const handleEndDateChange = (newEndDate: Date | undefined) => {
+    // Only set end date if it's after the start date
+    if (newEndDate && draftStartDate && newEndDate > draftStartDate) {
+      setDraftEndDate(newEndDate);
+    } else if (newEndDate && !draftStartDate) {
+      setDraftEndDate(newEndDate);
     }
   };
 
@@ -96,10 +105,16 @@ export function CampaignScheduleSection({ startDate, endDate, onScheduleUpdate }
                 <Label htmlFor="end-date" className="mb-2 block">End Date</Label>
                 <DatePicker
                   date={draftEndDate}
-                  onSelect={setDraftEndDate}
+                  onSelect={handleEndDateChange}
                   placeholder="Select end date"
                   className="w-full"
+                  disabled={!draftStartDate}
                 />
+                {draftStartDate && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Must be after {draftStartDate.toLocaleDateString()}
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex gap-3">
