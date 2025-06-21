@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Target, Users, Clock, Send, Mail, Edit, Save, X, Rocket, Pause, Loader } from "lucide-react";
+import { ArrowLeft, Target, Users, Clock, Send, Mail, Edit, Save, X, Rocket, Pause, Loader, Check, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Sidebar } from "@/components/dashboard/Sidebar";
@@ -135,7 +135,8 @@ export default function CampaignDetails() {
     setHasEmailTemplate(hasTemplate);
   };
 
-  const canLaunchCampaign = campaign.stage === "draft" && hasEmailTemplate && leads.length > 0;
+  const hasSchedule = campaign.startDate && campaign.endDate;
+  const canLaunchCampaign = campaign.stage === "draft" && hasEmailTemplate && leads.length > 0 && hasSchedule;
 
   const launchCampaign = async () => {
     setIsLaunching(true);
@@ -203,11 +204,15 @@ export default function CampaignDetails() {
                     <p className="text-gray-600">Created on {new Date(campaign.createdAt).toLocaleDateString()}</p>
                   </div>
                   <div className="flex gap-3">
-                    {campaign.stage === "draft" && canLaunchCampaign && (
+                    {campaign.stage === "draft" && (
                       <Button 
                         onClick={launchCampaign}
-                        disabled={isLaunching}
-                        className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600"
+                        disabled={isLaunching || !canLaunchCampaign}
+                        className={`${
+                          canLaunchCampaign 
+                            ? "bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600" 
+                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        }`}
                       >
                         {isLaunching ? (
                           <>
@@ -278,21 +283,44 @@ export default function CampaignDetails() {
                 {/* Launch Requirements */}
                 {campaign.stage === "draft" && (
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h4 className="font-medium text-blue-900 mb-2">Ready to Launch?</h4>
-                    <div className="space-y-1 text-sm">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${hasEmailTemplate ? 'bg-green-500' : 'bg-gray-300'}`} />
-                        <span className={hasEmailTemplate ? 'text-green-700' : 'text-gray-600'}>
+                    <h4 className="font-medium text-blue-900 mb-3">Ready to Launch?</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center gap-3">
+                        {hasEmailTemplate ? (
+                          <Check className="w-5 h-5 text-green-500" />
+                        ) : (
+                          <AlertCircle className="w-5 h-5 text-gray-400" />
+                        )}
+                        <span className={hasEmailTemplate ? 'text-green-700 font-medium' : 'text-gray-600'}>
                           Email template created
                         </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${leads.length > 0 ? 'bg-green-500' : 'bg-gray-300'}`} />
-                        <span className={leads.length > 0 ? 'text-green-700' : 'text-gray-600'}>
+                      <div className="flex items-center gap-3">
+                        {leads.length > 0 ? (
+                          <Check className="w-5 h-5 text-green-500" />
+                        ) : (
+                          <AlertCircle className="w-5 h-5 text-gray-400" />
+                        )}
+                        <span className={leads.length > 0 ? 'text-green-700 font-medium' : 'text-gray-600'}>
                           Target audience generated ({leads.length} leads)
                         </span>
                       </div>
+                      <div className="flex items-center gap-3">
+                        {hasSchedule ? (
+                          <Check className="w-5 h-5 text-green-500" />
+                        ) : (
+                          <AlertCircle className="w-5 h-5 text-gray-400" />
+                        )}
+                        <span className={hasSchedule ? 'text-green-700 font-medium' : 'text-gray-600'}>
+                          Campaign schedule configured
+                        </span>
+                      </div>
                     </div>
+                    {!canLaunchCampaign && (
+                      <p className="text-xs text-blue-700 mt-3 italic">
+                        Complete all requirements above to launch your campaign
+                      </p>
+                    )}
                   </div>
                 )}
               </div>
