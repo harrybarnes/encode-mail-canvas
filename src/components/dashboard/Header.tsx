@@ -1,7 +1,6 @@
 
 import { Search, Bell, User, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,9 +12,8 @@ export function Header() {
   return (
     <header className="bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 sticky top-0 z-50">
       <div className="flex items-center justify-between">
-        {/* Left: Logo and Sidebar Trigger */}
+        {/* Left: Logo */}
         <div className="flex items-center gap-4">
-          <SidebarTrigger className="hover:bg-gray-100 rounded-lg" />
           <div className="font-bold text-2xl gradient-text tracking-tight">
             InboxIntel
           </div>
