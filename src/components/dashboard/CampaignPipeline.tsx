@@ -1,7 +1,22 @@
 
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Target, Clock, Send, MessageSquare, CheckCircle } from "lucide-react";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { NewCampaignForm } from "@/components/forms/NewCampaignForm";
 
-const campaigns = [
+interface Campaign {
+  id: number;
+  name: string;
+  stage: string;
+  sent: number;
+  replies: number;
+  status: string;
+  goal: string;
+  progress: number;
+}
+
+const initialCampaigns = [
   {
     id: 1,
     name: "Product Demo Outreach",
@@ -65,13 +80,47 @@ const getStageColor = (stage: string) => {
 };
 
 export function CampaignPipeline() {
+  const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleCreateCampaign = (campaignData: { name: string; goal: string; audience: string }) => {
+    const newCampaign: Campaign = {
+      id: Math.max(...campaigns.map(c => c.id)) + 1,
+      name: campaignData.name,
+      stage: "draft",
+      sent: 0,
+      replies: 0,
+      status: "Draft",
+      goal: campaignData.goal,
+      progress: 0,
+    };
+
+    setCampaigns([newCampaign, ...campaigns]);
+    setIsDialogOpen(false);
+  };
+
+  const handleCampaignClick = (campaignId: number) => {
+    navigate(`/campaign/${campaignId}`);
+  };
+
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-gray-900">Campaign Pipeline</h2>
-        <button className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all">
-          New Campaign
-        </button>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <button className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all">
+              New Campaign
+            </button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <NewCampaignForm
+              onSubmit={handleCreateCampaign}
+              onCancel={() => setIsDialogOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="space-y-4">
@@ -80,7 +129,8 @@ export function CampaignPipeline() {
           return (
             <div
               key={campaign.id}
-              className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-all duration-200 group"
+              className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-all duration-200 group cursor-pointer"
+              onClick={() => handleCampaignClick(campaign.id)}
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
