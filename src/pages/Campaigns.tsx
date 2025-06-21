@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Target, Clock, Send, MessageSquare, CheckCircle, Plus, Filter, Search, Calendar } from "lucide-react";
@@ -46,7 +47,7 @@ const initialCampaigns: Campaign[] = [
   },
   {
     id: 2,
-    name: "Partnership Proposals", 
+    name: "Partnership Proposals",
     stage: "draft",
     sent: 0,
     replies: 0,
@@ -79,6 +80,30 @@ const initialCampaigns: Campaign[] = [
     progress: 100,
     createdAt: "2024-01-05",
     replyRate: 22.5,
+  },
+  {
+    id: 5,
+    name: "Sales Follow-up Campaign",
+    stage: "active",
+    sent: 78,
+    replies: 12,
+    status: "In Progress",
+    goal: "Convert 20 leads to customers",
+    progress: 65,
+    createdAt: "2024-01-18",
+    replyRate: 15.4,
+  },
+  {
+    id: 6,
+    name: "Event Promotion",
+    stage: "draft",
+    sent: 0,
+    replies: 0,
+    status: "Draft",
+    goal: "Get 100 event registrations",
+    progress: 10,
+    createdAt: "2024-01-22",
+    replyRate: 0,
   },
 ];
 
