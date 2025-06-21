@@ -10,7 +10,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { NewCampaignForm } from "@/components/forms/NewCampaignForm";
-import { useToast } from "@/hooks/use-toast";
 import {
   Select,
   SelectContent,
@@ -110,7 +109,6 @@ export default function Campaigns() {
   const [sortBy, setSortBy] = useState("recent");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const handleCreateCampaign = (campaignData: { name: string; goal: string; audience: string }) => {
     const newCampaign: Campaign = {
@@ -128,15 +126,6 @@ export default function Campaigns() {
 
     setCampaigns([newCampaign, ...campaigns]);
     setIsDialogOpen(false);
-    
-    // Show success toast
-    toast({
-      title: "Campaign created",
-      description: `${campaignData.name} has been created successfully.`,
-    });
-    
-    // Navigate to campaign details page
-    navigate(`/campaign/${newCampaign.id}`);
   };
 
   const handleCampaignClick = (campaignId: number) => {
