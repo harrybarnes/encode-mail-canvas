@@ -3,7 +3,8 @@ import { useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, Mail, Reply, TrendingUp, Play, Pause } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CalendarDays, Mail, Reply, TrendingUp, Play, Pause, Filter } from "lucide-react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 interface Lead {
@@ -102,9 +103,21 @@ const chartConfig = {
 
 export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
   const [selectedPeriod, setSelectedPeriod] = useState("7d");
+  const [activityFilter, setActivityFilter] = useState("all");
 
   const dailyEmailsTarget = Math.ceil(leads.length / 7); // Spread over 7 days
-  const totalDays = 7;
+  const totalDays = "7 days";
+
+  const filterButtons = [
+    { key: "all", label: "All Activity", icon: Filter },
+    { key: "sent", label: "Sent Emails", icon: Mail },
+    { key: "reply", label: "Replies", icon: Reply },
+    { key: "campaign", label: "Campaign Actions", icon: Play },
+  ];
+
+  const filteredActivityLog = activityFilter === "all" 
+    ? mockActivityLog 
+    : mockActivityLog.filter(activity => activity.type === activityFilter);
 
   return (
     <div className="space-y-6">
@@ -190,61 +203,89 @@ export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
       {/* Activity Log */}
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600">
-              <CalendarDays className="w-6 h-6 text-white" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600">
+                <CalendarDays className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <CardTitle>Recent Activity</CardTitle>
+                <CardDescription>
+                  Latest emails sent, replies received, and campaign actions
+                </CardDescription>
+              </div>
             </div>
-            <div>
-              <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>
-                Latest emails sent, replies received, and campaign actions
-              </CardDescription>
-            </div>
+          </div>
+          
+          {/* Activity Filters */}
+          <div className="flex flex-wrap gap-2 mt-4">
+            {filterButtons.map((filter) => {
+              const Icon = filter.icon;
+              return (
+                <Button
+                  key={filter.key}
+                  variant={activityFilter === filter.key ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setActivityFilter(filter.key)}
+                  className="h-8"
+                >
+                  <Icon className="w-4 h-4 mr-1.5" />
+                  {filter.label}
+                </Button>
+              );
+            })}
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {mockActivityLog.map((activity) => (
-              <div key={activity.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                <div className="flex-shrink-0">
-                  {activity.type === "sent" ? (
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <Mail className="w-4 h-4 text-blue-600" />
-                    </div>
-                  ) : activity.type === "reply" ? (
-                    <div className="p-2 bg-green-100 rounded-lg">
-                      <Reply className="w-4 h-4 text-green-600" />
-                    </div>
-                  ) : (
-                    <div className="p-2 bg-orange-100 rounded-lg">
-                      {activity.message.includes("paused") ? (
-                        <Pause className="w-4 h-4 text-orange-600" />
-                      ) : (
-                        <Play className="w-4 h-4 text-orange-600" />
-                      )}
-                    </div>
-                  )}
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900">{activity.message}</p>
-                  <p className="text-sm text-gray-600">{activity.recipient}</p>
-                </div>
-                <div className="flex-shrink-0">
-                  <Badge variant={
-                    activity.type === "sent" ? "secondary" : 
-                    activity.type === "reply" ? "default" : 
-                    "outline"
-                  }>
-                    {activity.type === "sent" ? "Sent" : 
-                     activity.type === "reply" ? "Reply" : 
-                     "Campaign"}
-                  </Badge>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {new Date(activity.timestamp).toLocaleTimeString()}
-                  </p>
-                </div>
+            {filteredActivityLog.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <Filter className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <p>No {activityFilter === "all" ? "" : activityFilter} activity found</p>
               </div>
-            ))}
+            ) : (
+              filteredActivityLog.map((activity) => (
+                <div key={activity.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                  <div className="flex-shrink-0">
+                    {activity.type === "sent" ? (
+                      <div className="p-2 bg-blue-100 rounded-lg">
+                        <Mail className="w-4 h-4 text-blue-600" />
+                      </div>
+                    ) : activity.type === "reply" ? (
+                      <div className="p-2 bg-green-100 rounded-lg">
+                        <Reply className="w-4 h-4 text-green-600" />
+                      </div>
+                    ) : (
+                      <div className="p-2 bg-orange-100 rounded-lg">
+                        {activity.message.includes("paused") ? (
+                          <Pause className="w-4 h-4 text-orange-600" />
+                        ) : (
+                          <Play className="w-4 h-4 text-orange-600" />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900">{activity.message}</p>
+                    <p className="text-sm text-gray-600">{activity.recipient}</p>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <Badge variant={
+                      activity.type === "sent" ? "secondary" : 
+                      activity.type === "reply" ? "default" : 
+                      "outline"
+                    }>
+                      {activity.type === "sent" ? "Sent" : 
+                       activity.type === "reply" ? "Reply" : 
+                       "Campaign"}
+                    </Badge>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {new Date(activity.timestamp).toLocaleTimeString()}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>

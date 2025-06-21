@@ -398,37 +398,49 @@ export default function CampaignDetails() {
           </div>
         </div>
 
-        {/* Tabs */}
+        {/* Tabs with Animation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="settings">Campaign Settings</TabsTrigger>
-            <TabsTrigger value="activity">Campaign Activity</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 relative">
+            <TabsTrigger 
+              value="settings" 
+              className="relative transition-all duration-300 ease-in-out data-[state=active]:translate-x-0"
+            >
+              Campaign Settings
+            </TabsTrigger>
+            <TabsTrigger 
+              value="activity" 
+              className="relative transition-all duration-300 ease-in-out data-[state=active]:translate-x-0"
+            >
+              Campaign Activity
+            </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="settings" className="space-y-6">
-            {/* Email Template Section */}
-            <EmailTemplateSection 
-              campaign={campaign} 
-              onTemplateChange={handleEmailTemplateUpdate}
-            />
+          <div className="mt-6">
+            <TabsContent value="settings" className="space-y-6">
+              {/* Email Template Section */}
+              <EmailTemplateSection 
+                campaign={campaign} 
+                onTemplateChange={handleEmailTemplateUpdate}
+              />
 
-            {/* Lead List Section */}
-            <LeadListSection 
-              campaign={campaign} 
-              onLeadsUpdate={handleLeadsUpdate}
-            />
+              {/* Lead List Section */}
+              <LeadListSection 
+                campaign={campaign} 
+                onLeadsUpdate={handleLeadsUpdate}
+              />
 
-            {/* Campaign Schedule Section */}
-            <CampaignScheduleSection
-              startDate={campaign.startDate}
-              endDate={campaign.endDate}
-              onScheduleUpdate={handleScheduleUpdate}
-            />
-          </TabsContent>
-          
-          <TabsContent value="activity" className="space-y-6">
-            <CampaignDashboard campaign={campaign} leads={leads} />
-          </TabsContent>
+              {/* Campaign Schedule Section */}
+              <CampaignScheduleSection
+                startDate={campaign.startDate}
+                endDate={campaign.endDate}
+                onScheduleUpdate={handleScheduleUpdate}
+              />
+            </TabsContent>
+            
+            <TabsContent value="activity" className="space-y-6">
+              <CampaignDashboard campaign={campaign} leads={leads} />
+            </TabsContent>
+          </div>
         </Tabs>
       </>
     );
