@@ -63,7 +63,7 @@ export function Sidebar() {
             <SidebarMenu className="space-y-1">
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className={collapsed ? "!justify-center !w-full !p-0" : ""}>
                     <NavLink 
                       to={item.url} 
                       end 
