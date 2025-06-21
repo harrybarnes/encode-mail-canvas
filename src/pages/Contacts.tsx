@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { NewContactForm } from "@/components/forms/NewContactForm";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Table,
   TableBody,
@@ -332,99 +333,103 @@ export default function Contacts() {
                     </Select>
                   </div>
 
-                  {/* Contacts Table */}
+                  {/* Contacts Table with ScrollArea */}
                   <div className="border rounded-lg">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Contact</TableHead>
-                          <TableHead>Company</TableHead>
-                          <TableHead>Email</TableHead>
-                          <TableHead>Phone</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Tags</TableHead>
-                          <TableHead>Source</TableHead>
-                          <TableHead>Last Contact</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {filteredContacts.map((contact) => (
-                          <TableRow key={contact.id} className="hover:bg-gray-50">
-                            <TableCell>
-                              <div className="flex items-center gap-3">
-                                <Avatar className="w-10 h-10">
-                                  <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium text-sm">
-                                    {getInitials(contact.name)}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div>
-                                  <div className="font-medium text-gray-900">{contact.name}</div>
-                                  {contact.position && (
-                                    <div className="text-sm text-gray-500">{contact.position}</div>
-                                  )}
-                                </div>
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-2">
-                                {contact.company && (
-                                  <>
-                                    <Building className="w-4 h-4 text-gray-400" />
-                                    <span className="text-sm">{contact.company}</span>
-                                  </>
-                                )}
-                                {contact.location && (
-                                  <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
-                                    <MapPin className="w-3 h-3" />
-                                    <span>{contact.location}</span>
+                    <ScrollArea className="h-[600px] w-full">
+                      <div className="min-w-[1200px]">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead className="w-[250px]">Contact</TableHead>
+                              <TableHead className="w-[200px]">Company</TableHead>
+                              <TableHead className="w-[250px]">Email</TableHead>
+                              <TableHead className="w-[150px]">Phone</TableHead>
+                              <TableHead className="w-[100px]">Status</TableHead>
+                              <TableHead className="w-[200px]">Tags</TableHead>
+                              <TableHead className="w-[100px]">Source</TableHead>
+                              <TableHead className="w-[120px]">Last Contact</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {filteredContacts.map((contact) => (
+                              <TableRow key={contact.id} className="hover:bg-gray-50">
+                                <TableCell>
+                                  <div className="flex items-center gap-3">
+                                    <Avatar className="w-10 h-10">
+                                      <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium text-sm">
+                                        {getInitials(contact.name)}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    <div>
+                                      <div className="font-medium text-gray-900">{contact.name}</div>
+                                      {contact.position && (
+                                        <div className="text-sm text-gray-500">{contact.position}</div>
+                                      )}
+                                    </div>
                                   </div>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-2">
-                                <Mail className="w-4 h-4 text-gray-400" />
-                                <span className="text-sm">{contact.email}</span>
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              {contact.phone && (
-                                <div className="flex items-center gap-2">
-                                  <Phone className="w-4 h-4 text-gray-400" />
-                                  <span className="text-sm">{contact.phone}</span>
-                                </div>
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant="outline" className={getStatusColor(contact.status)}>
-                                {contact.status}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex flex-wrap gap-1">
-                                {contact.tags.map((tag) => (
-                                  <Badge
-                                    key={tag}
-                                    variant="outline"
-                                    className={`text-xs ${getTagColor(tag)}`}
-                                  >
-                                    {tag}
+                                </TableCell>
+                                <TableCell>
+                                  <div className="flex items-center gap-2">
+                                    {contact.company && (
+                                      <>
+                                        <Building className="w-4 h-4 text-gray-400" />
+                                        <span className="text-sm">{contact.company}</span>
+                                      </>
+                                    )}
+                                    {contact.location && (
+                                      <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                                        <MapPin className="w-3 h-3" />
+                                        <span>{contact.location}</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="flex items-center gap-2">
+                                    <Mail className="w-4 h-4 text-gray-400" />
+                                    <span className="text-sm">{contact.email}</span>
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  {contact.phone && (
+                                    <div className="flex items-center gap-2">
+                                      <Phone className="w-4 h-4 text-gray-400" />
+                                      <span className="text-sm">{contact.phone}</span>
+                                    </div>
+                                  )}
+                                </TableCell>
+                                <TableCell>
+                                  <Badge variant="outline" className={getStatusColor(contact.status)}>
+                                    {contact.status}
                                   </Badge>
-                                ))}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <span className="text-sm text-gray-600">{contact.source}</span>
-                            </TableCell>
-                            <TableCell>
-                              <span className="text-sm text-gray-600">
-                                {new Date(contact.lastContact).toLocaleDateString()}
-                              </span>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="flex flex-wrap gap-1">
+                                    {contact.tags.map((tag) => (
+                                      <Badge
+                                        key={tag}
+                                        variant="outline"
+                                        className={`text-xs ${getTagColor(tag)}`}
+                                      >
+                                        {tag}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <span className="text-sm text-gray-600">{contact.source}</span>
+                                </TableCell>
+                                <TableCell>
+                                  <span className="text-sm text-gray-600">
+                                    {new Date(contact.lastContact).toLocaleDateString()}
+                                  </span>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </ScrollArea>
                   </div>
 
                   {/* Empty state */}
