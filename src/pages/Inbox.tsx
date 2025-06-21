@@ -67,14 +67,14 @@ const Inbox = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-gray-50 w-full">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 w-full">
         <div className="flex w-full">
           <Sidebar />
           <div className="flex-1 flex flex-col">
             <Header />
             <main className="flex-1 p-6">
               <div className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
                   Inbox
                 </h1>
                 <p className="text-gray-600">
@@ -85,29 +85,29 @@ const Inbox = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-12rem)]">
                 {/* Email List */}
                 <div className="lg:col-span-1">
-                  <Card className="border-0 shadow-sm h-full">
-                    <CardHeader className="pb-4">
+                  <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm h-full">
+                    <CardHeader className="pb-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-t-lg">
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-lg font-semibold text-gray-900">
+                        <CardTitle className="text-lg font-semibold">
                           Messages
                         </CardTitle>
                         <div className="flex items-center gap-2">
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
                             <Filter className="w-4 h-4" />
                           </Button>
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
                             <MoreHorizontal className="w-4 h-4" />
                           </Button>
                         </div>
                       </div>
                       <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/70 w-4 h-4" />
                         <input
                           type="text"
                           placeholder="Search emails..."
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
-                          className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent transition-all"
+                          className="w-full pl-10 pr-4 py-2 border-0 rounded-lg bg-white/20 text-white placeholder-white/70 focus:bg-white/30 focus:outline-none transition-all"
                         />
                       </div>
                     </CardHeader>
@@ -117,9 +117,9 @@ const Inbox = () => {
                           <div
                             key={email.id}
                             onClick={() => setSelectedEmail(email)}
-                            className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
-                              selectedEmail.id === email.id ? 'bg-gray-100' : ''
-                            } ${!email.isRead ? 'bg-blue-50' : ''}`}
+                            className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all ${
+                              selectedEmail.id === email.id ? 'bg-gradient-to-r from-blue-100 to-purple-100' : ''
+                            } ${!email.isRead ? 'bg-gradient-to-r from-yellow-50 to-orange-50' : ''}`}
                           >
                             <div className="flex items-start justify-between mb-2">
                               <div className="flex items-center gap-2">
@@ -138,7 +138,7 @@ const Inbox = () => {
                             <div className="text-xs text-gray-500 line-clamp-2 mb-2">
                               {email.preview}
                             </div>
-                            <Badge variant="secondary" className="text-xs">
+                            <Badge className="text-xs bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0">
                               {email.campaign}
                             </Badge>
                           </div>
@@ -150,22 +150,22 @@ const Inbox = () => {
 
                 {/* Email Content */}
                 <div className="lg:col-span-2">
-                  <Card className="border-0 shadow-sm h-full">
-                    <CardHeader className="border-b border-gray-100">
+                  <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm h-full">
+                    <CardHeader className="border-b border-gray-100 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-t-lg">
                       <div className="flex items-center justify-between">
                         <div>
-                          <CardTitle className="text-lg font-semibold text-gray-900">
+                          <CardTitle className="text-lg font-semibold">
                             {selectedEmail.subject}
                           </CardTitle>
-                          <p className="text-sm text-gray-600 mt-1">
+                          <p className="text-sm text-green-100 mt-1">
                             From: {selectedEmail.from} • {selectedEmail.time}
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Button variant="ghost" size="sm">
-                            <Star className={`w-4 h-4 ${selectedEmail.isStarred ? 'text-yellow-500 fill-current' : 'text-gray-400'}`} />
+                          <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
+                            <Star className={`w-4 h-4 ${selectedEmail.isStarred ? 'text-yellow-300 fill-current' : 'text-white'}`} />
                           </Button>
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
                             <Archive className="w-4 h-4" />
                           </Button>
                         </div>
@@ -173,7 +173,7 @@ const Inbox = () => {
                     </CardHeader>
                     <CardContent className="flex-1 p-6">
                       <div className="mb-6">
-                        <Badge variant="secondary" className="mb-4">
+                        <Badge className="mb-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0">
                           Campaign: {selectedEmail.campaign}
                         </Badge>
                         <div className="prose max-w-none text-gray-700">
@@ -197,18 +197,18 @@ const Inbox = () => {
                       
                       <div className="border-t border-gray-100 pt-6">
                         <div className="flex items-center gap-2 mb-4">
-                          <Button className="bg-gray-900 text-white hover:bg-gray-800">
+                          <Button className="bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 border-0">
                             <Reply className="w-4 h-4 mr-2" />
                             Reply
                           </Button>
-                          <Button variant="outline">
+                          <Button className="border-purple-300 text-purple-600 hover:bg-purple-50">
                             <Forward className="w-4 h-4 mr-2" />
                             Forward
                           </Button>
                         </div>
                         <textarea
                           placeholder="Type your reply..."
-                          className="w-full h-32 p-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent"
+                          className="w-full h-32 p-3 border border-purple-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-transparent"
                         />
                       </div>
                     </CardContent>

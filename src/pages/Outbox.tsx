@@ -92,14 +92,14 @@ const Outbox = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-gray-50 w-full">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 w-full">
         <div className="flex w-full">
           <Sidebar />
           <div className="flex-1 flex flex-col">
             <Header />
             <main className="flex-1 p-6">
               <div className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-2">
                   Outbox
                 </h1>
                 <p className="text-gray-600">
@@ -109,84 +109,84 @@ const Outbox = () => {
 
               {/* Stats Cards */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <Card className="border-0 shadow-sm">
+                <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-500 to-blue-600 text-white">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="text-2xl font-bold text-gray-900">24</div>
-                        <div className="text-sm text-gray-600">Scheduled</div>
+                        <div className="text-2xl font-bold">24</div>
+                        <div className="text-sm text-blue-100">Scheduled</div>
                       </div>
-                      <Clock className="w-8 h-8 text-blue-600" />
+                      <Clock className="w-8 h-8 text-blue-200" />
                     </div>
                   </CardContent>
                 </Card>
                 
-                <Card className="border-0 shadow-sm">
+                <Card className="border-0 shadow-lg bg-gradient-to-br from-green-500 to-green-600 text-white">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="text-2xl font-bold text-gray-900">156</div>
-                        <div className="text-sm text-gray-600">Sent Today</div>
+                        <div className="text-2xl font-bold">156</div>
+                        <div className="text-sm text-green-100">Sent Today</div>
                       </div>
-                      <Send className="w-8 h-8 text-green-600" />
+                      <Send className="w-8 h-8 text-green-200" />
                     </div>
                   </CardContent>
                 </Card>
                 
-                <Card className="border-0 shadow-sm">
+                <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-500 to-purple-600 text-white">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="text-2xl font-bold text-gray-900">89</div>
-                        <div className="text-sm text-gray-600">Opened</div>
+                        <div className="text-2xl font-bold">89</div>
+                        <div className="text-sm text-purple-100">Opened</div>
                       </div>
-                      <CheckCircle className="w-8 h-8 text-gray-600" />
+                      <CheckCircle className="w-8 h-8 text-purple-200" />
                     </div>
                   </CardContent>
                 </Card>
                 
-                <Card className="border-0 shadow-sm">
+                <Card className="border-0 shadow-lg bg-gradient-to-br from-red-500 to-red-600 text-white">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="text-2xl font-bold text-gray-900">3</div>
-                        <div className="text-sm text-gray-600">Failed</div>
+                        <div className="text-2xl font-bold">3</div>
+                        <div className="text-sm text-red-100">Failed</div>
                       </div>
-                      <XCircle className="w-8 h-8 text-red-600" />
+                      <XCircle className="w-8 h-8 text-red-200" />
                     </div>
                   </CardContent>
                 </Card>
               </div>
 
               {/* Main Content */}
-              <Card className="border-0 shadow-sm">
-                <CardHeader>
+              <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+                <CardHeader className="bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-t-lg">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg font-semibold text-gray-900">
+                    <CardTitle className="text-lg font-semibold">
                       Email Queue
                     </CardTitle>
                     <div className="flex items-center gap-3">
                       <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/70 w-4 h-4" />
                         <input
                           type="text"
                           placeholder="Search emails..."
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
-                          className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent transition-all"
+                          className="pl-10 pr-4 py-2 border-0 rounded-lg bg-white/20 text-white placeholder-white/70 focus:bg-white/30 focus:outline-none transition-all"
                         />
                       </div>
                       <select 
                         value={statusFilter} 
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent"
+                        className="px-3 py-2 border-0 rounded-lg bg-white/20 text-white focus:bg-white/30 focus:outline-none"
                       >
                         <option value="all">All Status</option>
                         <option value="scheduled">Scheduled</option>
                         <option value="sent">Sent</option>
                         <option value="failed">Failed</option>
                       </select>
-                      <Button variant="outline" size="sm">
+                      <Button variant="ghost" size="sm" className="text-white hover:bg-white/20 border-white/30">
                         <Filter className="w-4 h-4 mr-2" />
                         Filter
                       </Button>
@@ -196,21 +196,21 @@ const Outbox = () => {
                 <CardContent className="p-0">
                   <Table>
                     <TableHeader>
-                      <TableRow>
-                        <TableHead>Recipient</TableHead>
-                        <TableHead>Subject</TableHead>
-                        <TableHead>Campaign</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Scheduled/Sent</TableHead>
-                        <TableHead>Engagement</TableHead>
-                        <TableHead>Actions</TableHead>
+                      <TableRow className="bg-gradient-to-r from-orange-50 to-red-50">
+                        <TableHead className="font-semibold text-gray-700">Recipient</TableHead>
+                        <TableHead className="font-semibold text-gray-700">Subject</TableHead>
+                        <TableHead className="font-semibold text-gray-700">Campaign</TableHead>
+                        <TableHead className="font-semibold text-gray-700">Status</TableHead>
+                        <TableHead className="font-semibold text-gray-700">Scheduled/Sent</TableHead>
+                        <TableHead className="font-semibold text-gray-700">Engagement</TableHead>
+                        <TableHead className="font-semibold text-gray-700">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {filteredEmails.map((email) => {
                         const StatusIcon = statusConfig[email.status].icon;
                         return (
-                          <TableRow key={email.id}>
+                          <TableRow key={email.id} className="hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50">
                             <TableCell className="font-medium">
                               {email.to}
                             </TableCell>
@@ -218,7 +218,7 @@ const Outbox = () => {
                               {email.subject}
                             </TableCell>
                             <TableCell>
-                              <Badge variant="secondary">
+                              <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0">
                                 {email.campaign}
                               </Badge>
                             </TableCell>
@@ -238,10 +238,10 @@ const Outbox = () => {
                             <TableCell>
                               <div className="flex items-center gap-2">
                                 {email.opened && (
-                                  <Badge variant="outline" className="text-xs">Opened</Badge>
+                                  <Badge className="text-xs bg-gradient-to-r from-blue-500 to-purple-500 text-white border-0">Opened</Badge>
                                 )}
                                 {email.replied && (
-                                  <Badge variant="outline" className="text-xs bg-green-50 text-green-700">Replied</Badge>
+                                  <Badge className="text-xs bg-gradient-to-r from-green-500 to-blue-500 text-white border-0">Replied</Badge>
                                 )}
                                 {!email.opened && !email.replied && email.status === "sent" && (
                                   <span className="text-xs text-gray-500">No activity</span>
@@ -252,16 +252,16 @@ const Outbox = () => {
                               <div className="flex items-center gap-1">
                                 {email.status === "scheduled" && (
                                   <>
-                                    <Button variant="ghost" size="sm">
+                                    <Button variant="ghost" size="sm" className="text-orange-600 hover:bg-orange-50">
                                       <Pause className="w-4 h-4" />
                                     </Button>
-                                    <Button variant="ghost" size="sm">
+                                    <Button variant="ghost" size="sm" className="text-green-600 hover:bg-green-50">
                                       <Send className="w-4 h-4" />
                                     </Button>
                                   </>
                                 )}
                                 {email.status === "failed" && (
-                                  <Button variant="ghost" size="sm">
+                                  <Button variant="ghost" size="sm" className="text-blue-600 hover:bg-blue-50">
                                     <Play className="w-4 h-4" />
                                   </Button>
                                 )}
