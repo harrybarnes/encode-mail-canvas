@@ -10,16 +10,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { NewContactForm } from "@/components/forms/NewContactForm";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   Select,
   SelectContent,
@@ -99,22 +89,22 @@ const initialContacts: Contact[] = [
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case "hot": return "bg-red-50 text-red-600 border-red-200";
-    case "warm": return "bg-orange-50 text-orange-600 border-orange-200";
-    case "cold": return "bg-blue-50 text-blue-600 border-blue-200";
-    case "converted": return "bg-green-50 text-green-600 border-green-200";
-    default: return "bg-gray-50 text-gray-600 border-gray-200";
+    case "hot": return "bg-red-100 text-red-600 hover:bg-red-200";
+    case "warm": return "bg-orange-100 text-orange-600 hover:bg-orange-200";
+    case "cold": return "bg-blue-100 text-blue-600 hover:bg-blue-200";
+    case "converted": return "bg-green-100 text-green-600 hover:bg-green-200";
+    default: return "bg-gray-100 text-gray-600 hover:bg-gray-200";
   }
 };
 
 const getTagColor = (tag: string) => {
   switch (tag) {
-    case "prospect": return "bg-purple-50 text-purple-600 border-purple-200";
-    case "customer": return "bg-green-50 text-green-600 border-green-200";
-    case "enterprise": return "bg-blue-50 text-blue-600 border-blue-200";
-    case "startup": return "bg-orange-50 text-orange-600 border-orange-200";
-    case "decision-maker": return "bg-red-50 text-red-600 border-red-200";
-    default: return "bg-gray-50 text-gray-600 border-gray-200";
+    case "prospect": return "bg-purple-100 text-purple-600";
+    case "customer": return "bg-green-100 text-green-600";
+    case "enterprise": return "bg-blue-100 text-blue-600";
+    case "startup": return "bg-orange-100 text-orange-600";
+    case "decision-maker": return "bg-red-100 text-red-600";
+    default: return "bg-gray-100 text-gray-600";
   }
 };
 
@@ -333,103 +323,83 @@ export default function Contacts() {
                     </Select>
                   </div>
 
-                  {/* Contacts Table with ScrollArea */}
-                  <div className="border rounded-lg">
-                    <ScrollArea className="h-[600px] w-full">
-                      <div className="min-w-[1200px]">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead className="w-[250px]">Contact</TableHead>
-                              <TableHead className="w-[200px]">Company</TableHead>
-                              <TableHead className="w-[250px]">Email</TableHead>
-                              <TableHead className="w-[150px]">Phone</TableHead>
-                              <TableHead className="w-[100px]">Status</TableHead>
-                              <TableHead className="w-[200px]">Tags</TableHead>
-                              <TableHead className="w-[100px]">Source</TableHead>
-                              <TableHead className="w-[120px]">Last Contact</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {filteredContacts.map((contact) => (
-                              <TableRow key={contact.id} className="hover:bg-gray-50">
-                                <TableCell>
-                                  <div className="flex items-center gap-3">
-                                    <Avatar className="w-10 h-10">
-                                      <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium text-sm">
-                                        {getInitials(contact.name)}
-                                      </AvatarFallback>
-                                    </Avatar>
-                                    <div>
-                                      <div className="font-medium text-gray-900">{contact.name}</div>
-                                      {contact.position && (
-                                        <div className="text-sm text-gray-500">{contact.position}</div>
-                                      )}
-                                    </div>
-                                  </div>
-                                </TableCell>
-                                <TableCell>
-                                  <div className="flex items-center gap-2">
-                                    {contact.company && (
-                                      <>
-                                        <Building className="w-4 h-4 text-gray-400" />
-                                        <span className="text-sm">{contact.company}</span>
-                                      </>
-                                    )}
-                                    {contact.location && (
-                                      <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
-                                        <MapPin className="w-3 h-3" />
-                                        <span>{contact.location}</span>
-                                      </div>
-                                    )}
-                                  </div>
-                                </TableCell>
-                                <TableCell>
-                                  <div className="flex items-center gap-2">
-                                    <Mail className="w-4 h-4 text-gray-400" />
-                                    <span className="text-sm">{contact.email}</span>
-                                  </div>
-                                </TableCell>
-                                <TableCell>
-                                  {contact.phone && (
-                                    <div className="flex items-center gap-2">
-                                      <Phone className="w-4 h-4 text-gray-400" />
-                                      <span className="text-sm">{contact.phone}</span>
-                                    </div>
-                                  )}
-                                </TableCell>
-                                <TableCell>
-                                  <Badge variant="outline" className={getStatusColor(contact.status)}>
-                                    {contact.status}
-                                  </Badge>
-                                </TableCell>
-                                <TableCell>
-                                  <div className="flex flex-wrap gap-1">
-                                    {contact.tags.map((tag) => (
-                                      <Badge
-                                        key={tag}
-                                        variant="outline"
-                                        className={`text-xs ${getTagColor(tag)}`}
-                                      >
-                                        {tag}
-                                      </Badge>
-                                    ))}
-                                  </div>
-                                </TableCell>
-                                <TableCell>
-                                  <span className="text-sm text-gray-600">{contact.source}</span>
-                                </TableCell>
-                                <TableCell>
-                                  <span className="text-sm text-gray-600">
-                                    {new Date(contact.lastContact).toLocaleDateString()}
-                                  </span>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </div>
-                    </ScrollArea>
+                  {/* Contacts Grid */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {filteredContacts.map((contact) => (
+                      <Card
+                        key={contact.id}
+                        className="hover:shadow-lg transition-all duration-200 cursor-pointer group"
+                      >
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium text-sm">
+                                {getInitials(contact.name)}
+                              </div>
+                              <div>
+                                <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">
+                                  {contact.name}
+                                </CardTitle>
+                                {contact.position && (
+                                  <p className="text-sm text-gray-600">{contact.position}</p>
+                                )}
+                              </div>
+                            </div>
+                            <Badge className={getStatusColor(contact.status)}>
+                              {contact.status}
+                            </Badge>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                              <Mail className="w-4 h-4" />
+                              <span className="truncate">{contact.email}</span>
+                            </div>
+                            
+                            {contact.phone && (
+                              <div className="flex items-center gap-2 text-sm text-gray-600">
+                                <Phone className="w-4 h-4" />
+                                <span>{contact.phone}</span>
+                              </div>
+                            )}
+                            
+                            {contact.company && (
+                              <div className="flex items-center gap-2 text-sm text-gray-600">
+                                <Building className="w-4 h-4" />
+                                <span>{contact.company}</span>
+                              </div>
+                            )}
+                            
+                            {contact.location && (
+                              <div className="flex items-center gap-2 text-sm text-gray-600">
+                                <MapPin className="w-4 h-4" />
+                                <span>{contact.location}</span>
+                              </div>
+                            )}
+                            
+                            <div className="flex flex-wrap gap-1 mt-3">
+                              {contact.tags.map((tag) => (
+                                <Badge
+                                  key={tag}
+                                  variant="outline"
+                                  className={`text-xs ${getTagColor(tag)}`}
+                                >
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
+                            
+                            <div className="text-xs text-gray-500 mt-3 pt-3 border-t">
+                              <div className="flex justify-between">
+                                <span>Source: {contact.source}</span>
+                                <span>Last: {new Date(contact.lastContact).toLocaleDateString()}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </div>
 
                   {/* Empty state */}
