@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Mail, Sparkles, Edit, Save, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -5,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface Campaign {
-  id: string;
+  id: number;
   name: string;
   goal: string;
   audience: string;

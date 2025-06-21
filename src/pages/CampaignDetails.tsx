@@ -18,7 +18,6 @@ interface Campaign {
   goal: string;
   startDate: string;
   endDate: string;
-  audience: string;
 }
 
 interface Lead {
@@ -36,7 +35,6 @@ const mockCampaign: Campaign = {
   goal: "500",
   startDate: "2024-01-01",
   endDate: "2024-01-31",
-  audience: "Tech startup founders and CTOs",
 };
 
 const mockLeads: Lead[] = [
@@ -58,8 +56,6 @@ export default function CampaignDetails() {
   const [isLaunching, setIsLaunching] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
-  const [leads, setLeads] = useState<Lead[]>(mockLeads);
-  const [hasEmailTemplate, setHasEmailTemplate] = useState(false);
   const readyToLaunch = currentTaskIndex === launchTasks.length;
 
   useEffect(() => {
@@ -106,14 +102,6 @@ export default function CampaignDetails() {
     navigate("/");
   };
 
-  const handleLeadsUpdate = (updatedLeads: Lead[]) => {
-    setLeads(updatedLeads);
-  };
-
-  const handleTemplateChange = (hasTemplate: boolean) => {
-    setHasEmailTemplate(hasTemplate);
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -129,25 +117,25 @@ export default function CampaignDetails() {
             </button>
             <div className="h-6 w-px bg-gray-300" />
             <h1 className="text-2xl font-bold text-gray-900 animate-fade-in">
-              {mockCampaignState.name}
+              {mockCampaign.name}
             </h1>
             <Badge 
-              variant={mockCampaignState.stage === "active" ? "default" : mockCampaignState.stage === "paused" ? "secondary" : "outline"}
+              variant={mockCampaign.stage === "active" ? "default" : mockCampaign.stage === "paused" ? "secondary" : "outline"}
               className="animate-fade-in"
             >
-              {mockCampaignState.stage === "active" ? "Active" : 
-               mockCampaignState.stage === "paused" ? "Paused" : 
-               mockCampaignState.stage}
+              {mockCampaign.stage === "active" ? "Active" : 
+               mockCampaign.stage === "paused" ? "Paused" : 
+               mockCampaign.stage}
             </Badge>
           </div>
           <div className="flex items-center gap-3">
-            {mockCampaignState.stage === "active" || mockCampaignState.stage === "paused" ? (
+            {mockCampaign.stage === "active" || mockCampaign.stage === "paused" ? (
               <Button
                 onClick={handlePauseResume}
                 disabled={isProcessing}
-                variant={mockCampaignState.stage === "active" ? "outline" : "default"}
+                variant={mockCampaign.stage === "active" ? "outline" : "default"}
                 className={`transition-all duration-200 animate-fade-in ${
-                  mockCampaignState.stage === "active" 
+                  mockCampaign.stage === "active" 
                     ? "border-orange-500 text-orange-600 hover:bg-orange-50" 
                     : "bg-green-600 hover:bg-green-700 text-white"
                 }`}
@@ -155,11 +143,11 @@ export default function CampaignDetails() {
                 {isProcessing ? (
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                    {mockCampaignState.stage === "active" ? "Pausing..." : "Resuming..."}
+                    {mockCampaign.stage === "active" ? "Pausing..." : "Resuming..."}
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
-                    {mockCampaignState.stage === "active" ? (
+                    {mockCampaign.stage === "active" ? (
                       <>
                         <Pause className="w-4 h-4" />
                         Pause Campaign
@@ -193,7 +181,7 @@ export default function CampaignDetails() {
               </Button>
             )}
             <DeleteCampaignDialog 
-              campaignName={mockCampaignState.name}
+              campaignName={mockCampaign.name}
               onDelete={handleDeleteCampaign}
             />
           </div>
@@ -202,7 +190,7 @@ export default function CampaignDetails() {
 
       {/* Main Content */}
       <div className="p-6">
-        {mockCampaignState.stage === "active" || mockCampaignState.stage === "paused" ? (
+        {mockCampaign.stage === "active" || mockCampaign.stage === "paused" ? (
           <Tabs defaultValue="activity" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="activity" className="transition-all duration-200">
@@ -214,21 +202,18 @@ export default function CampaignDetails() {
             </TabsList>
             
             <TabsContent value="activity" className="animate-fade-in">
-              <CampaignDashboard campaign={mockCampaignState} leads={leads} />
+              <CampaignDashboard campaign={mockCampaign} leads={mockLeads} />
             </TabsContent>
             
             <TabsContent value="settings" className="space-y-6 animate-fade-in">
               <EmailTemplateSection 
-                campaign={mockCampaignState} 
-                onTemplateChange={handleTemplateChange}
+                campaign={mockCampaign} 
+                onUpdate={handleCampaignUpdate}
               />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <LeadListSection 
-                  campaign={mockCampaignState} 
-                  onLeadsUpdate={handleLeadsUpdate}
-                />
+                <LeadListSection leads={mockLeads} />
                 <CampaignScheduleSection 
-                  campaign={mockCampaignState} 
+                  campaign={mockCampaign} 
                   onUpdate={handleCampaignUpdate}
                 />
               </div>
@@ -300,7 +285,7 @@ export default function CampaignDetails() {
                     ].map((item, index) => (
                       <div 
                         key={item.label}
-                        className="flex items-center gap-2 p-3 bg-white rounded-lg animate-fade-in"
+                        className="flex items-center gap-2 p-3 bg-white rounded-lg transition-all duration-200 animate-fade-in"
                         style={{ animationDelay: `${index * 100}ms` }}
                       >
                         <item.icon className="w-4 h-4 text-green-600" />
@@ -316,16 +301,13 @@ export default function CampaignDetails() {
             {/* Campaign Configuration */}
             <div className="space-y-6">
               <EmailTemplateSection 
-                campaign={mockCampaignState} 
-                onTemplateChange={handleTemplateChange}
+                campaign={mockCampaign} 
+                onUpdate={handleCampaignUpdate}
               />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <LeadListSection 
-                  campaign={mockCampaignState} 
-                  onLeadsUpdate={handleLeadsUpdate}
-                />
+                <LeadListSection leads={mockLeads} />
                 <CampaignScheduleSection 
-                  campaign={mockCampaignState} 
+                  campaign={mockCampaign} 
                   onUpdate={handleCampaignUpdate}
                 />
               </div>
