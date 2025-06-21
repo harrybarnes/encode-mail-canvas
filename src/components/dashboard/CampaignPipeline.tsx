@@ -101,6 +101,7 @@ export function CampaignPipeline() {
   };
 
   const handleCampaignClick = (campaignId: number) => {
+    console.log(`Navigating to campaign ${campaignId}`);
     navigate(`/campaign/${campaignId}`);
   };
 
