@@ -1,131 +1,169 @@
 
 import { useState } from "react";
-import { Calendar, Edit, Save, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Calendar, Clock, Edit2, Save, X } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/date-picker";
 
 interface CampaignScheduleSectionProps {
-  startDate?: string;
-  endDate?: string;
-  onScheduleUpdate: (startDate: string, endDate: string) => void;
+  campaign: any;
+  onUpdate: (updates: any) => void;
 }
 
-export function CampaignScheduleSection({ startDate, endDate, onScheduleUpdate }: CampaignScheduleSectionProps) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [draftStartDate, setDraftStartDate] = useState<Date | undefined>(
-    startDate ? new Date(startDate) : undefined
+export function CampaignScheduleSection({ campaign, onUpdate }: CampaignScheduleSectionProps) {
+  const [isEditingGoal, setIsEditingGoal] = useState(false);
+  const [goalValue, setGoalValue] = useState(campaign.goal || "500");
+  const [startDate, setStartDate] = useState<Date | undefined>(
+    campaign.startDate ? new Date(campaign.startDate) : undefined
   );
-  const [draftEndDate, setDraftEndDate] = useState<Date | undefined>(
-    endDate ? new Date(endDate) : undefined
+  const [endDate, setEndDate] = useState<Date | undefined>(
+    campaign.endDate ? new Date(campaign.endDate) : undefined
   );
 
-  const startEditing = () => {
-    const today = new Date();
-    const weekFromToday = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    
-    setDraftStartDate(startDate ? new Date(startDate) : today);
-    setDraftEndDate(endDate ? new Date(endDate) : weekFromToday);
-    setIsEditing(true);
+  const handleSaveGoal = () => {
+    onUpdate({ goal: goalValue });
+    setIsEditingGoal(false);
   };
 
-  const saveSchedule = () => {
-    if (draftStartDate && draftEndDate) {
-      onScheduleUpdate(
-        draftStartDate.toISOString().split('T')[0],
-        draftEndDate.toISOString().split('T')[0]
-      );
+  const handleCancelGoal = () => {
+    setGoalValue(campaign.goal || "500");
+    setIsEditingGoal(false);
+  };
+
+  const handleStartDateChange = (date: Date | undefined) => {
+    setStartDate(date);
+    if (date) {
+      onUpdate({ startDate: date.toISOString() });
+      // If end date is before the new start date, clear it
+      if (endDate && date > endDate) {
+        setEndDate(undefined);
+        onUpdate({ endDate: null });
+      }
     }
-    setIsEditing(false);
   };
 
-  const cancelEditing = () => {
-    setDraftStartDate(startDate ? new Date(startDate) : undefined);
-    setDraftEndDate(endDate ? new Date(endDate) : undefined);
-    setIsEditing(false);
-  };
-
-  const handleStartDateChange = (newStartDate: Date | undefined) => {
-    setDraftStartDate(newStartDate);
-    // Auto-update end date to 7 days after start date
-    if (newStartDate) {
-      const endDateObj = new Date(newStartDate.getTime() + 7 * 24 * 60 * 60 * 1000);
-      setDraftEndDate(endDateObj);
+  const handleEndDateChange = (date: Date | undefined) => {
+    setEndDate(date);
+    if (date) {
+      onUpdate({ endDate: date.toISOString() });
     }
   };
 
   return (
-    <Card className="transition-all hover:shadow-md">
-      <CardHeader>
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600">
-            <Calendar className="w-6 h-6 text-white" />
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Campaign Goal */}
+      <Card className="transition-all duration-200 hover:shadow-md">
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-blue-100">
+              <Calendar className="w-4 h-4 text-blue-600" />
+            </div>
+            <div>
+              <CardTitle className="text-base">Campaign Goal</CardTitle>
+              <CardDescription className="text-sm">
+                Target number of emails to send
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {!isEditingGoal ? (
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg transition-colors hover:bg-gray-100">
+              <div>
+                <p className="font-medium text-gray-900">{goalValue} emails</p>
+                <p className="text-sm text-gray-600">Total target</p>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsEditingGoal(true)}
+                className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-colors"
+              >
+                <Edit2 className="w-4 h-4" />
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <div>
+                <Label htmlFor="goal">Target Emails</Label>
+                <Input
+                  id="goal"
+                  type="number"
+                  value={goalValue}
+                  onChange={(e) => setGoalValue(e.target.value)}
+                  placeholder="500"
+                  className="transition-all duration-200 focus:ring-2 focus:ring-blue-200"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  onClick={handleSaveGoal}
+                  className="bg-green-600 hover:bg-green-700 transition-colors"
+                >
+                  <Save className="w-4 h-4 mr-1" />
+                  Save
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCancelGoal}
+                  className="hover:bg-gray-50 transition-colors"
+                >
+                  <X className="w-4 h-4 mr-1" />
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Schedule Settings */}
+      <Card className="transition-all duration-200 hover:shadow-md">
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-green-100">
+              <Clock className="w-4 h-4 text-green-600" />
+            </div>
+            <div>
+              <CardTitle className="text-base">Schedule</CardTitle>
+              <CardDescription className="text-sm">
+                When to start and end the campaign
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <Label htmlFor="start-date" className="text-sm font-medium text-gray-700 mb-2 block">
+              Start Date
+            </Label>
+            <DatePicker
+              date={startDate}
+              onDateChange={handleStartDateChange}
+              placeholder="Select start date"
+              className="w-full"
+            />
           </div>
           <div>
-            <CardTitle>Campaign Schedule</CardTitle>
-            <CardDescription>
-              Set the start and end dates for your campaign
-            </CardDescription>
+            <Label htmlFor="end-date" className="text-sm font-medium text-gray-700 mb-2 block">
+              End Date
+            </Label>
+            <DatePicker
+              date={endDate}
+              onDateChange={handleEndDateChange}
+              placeholder="Select end date"
+              disabled={!startDate}
+              className="w-full"
+              // Disable dates before the start date
+              disabledDate={(date) => startDate ? date < startDate : false}
+            />
           </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        {!startDate && !endDate && !isEditing ? (
-          <div className="text-center py-8 bg-gray-50 rounded-lg transition-all hover:bg-gray-100">
-            <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-            <p className="text-gray-600 mb-4">No schedule configured</p>
-            <Button onClick={startEditing} variant="outline" className="transition-all hover:scale-105">
-              <Calendar className="w-4 h-4 mr-2" />
-              Set Schedule
-            </Button>
-          </div>
-        ) : isEditing ? (
-          <div className="space-y-4 animate-fade-in">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="start-date">Start Date</Label>
-                <DatePicker
-                  date={draftStartDate}
-                  onDateChange={handleStartDateChange}
-                  placeholder="Select start date"
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label htmlFor="end-date">End Date</Label>
-                <DatePicker
-                  date={draftEndDate}
-                  onDateChange={setDraftEndDate}
-                  placeholder="Select end date"
-                  className="mt-1"
-                />
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <Button onClick={saveSchedule} className="bg-green-600 hover:bg-green-700 transition-all hover:scale-105">
-                <Save className="w-4 h-4 mr-2" />
-                Save Schedule
-              </Button>
-              <Button onClick={cancelEditing} variant="outline" className="transition-all hover:scale-105">
-                <X className="w-4 h-4 mr-2" />
-                Cancel
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex justify-between items-center animate-fade-in">
-            <div className="space-y-1">
-              <p className="text-sm text-gray-600">Start Date: <span className="font-medium">{new Date(startDate!).toLocaleDateString()}</span></p>
-              <p className="text-sm text-gray-600">End Date: <span className="font-medium">{new Date(endDate!).toLocaleDateString()}</span></p>
-            </div>
-            <Button onClick={startEditing} variant="outline" className="transition-all hover:scale-105">
-              <Edit className="w-4 h-4 mr-2" />
-              Edit Schedule
-            </Button>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
