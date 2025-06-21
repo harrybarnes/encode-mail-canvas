@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
+import { DeleteCampaignDialog } from "@/components/campaign/DeleteCampaignDialog";
 
 interface Lead {
   id: number;
@@ -79,9 +80,9 @@ export default function CampaignDetails() {
             <div className="flex-1 flex flex-col">
               <Header />
               <main className="flex-1 p-6">
-                <div className="text-center">
+                <div className="text-center animate-fade-in">
                   <h1 className="text-2xl font-bold text-gray-900 mb-4">Campaign Not Found</h1>
-                  <Button onClick={() => navigate("/")} variant="outline">
+                  <Button onClick={() => navigate("/")} variant="outline" className="transition-all duration-200 hover:scale-105">
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Back to Dashboard
                   </Button>
@@ -215,13 +216,13 @@ export default function CampaignDetails() {
             <Sidebar />
             <div className="flex-1 flex flex-col">
               <Header />
-              <main className="flex-1 p-6 space-y-6">
+              <main className="flex-1 p-6 space-y-6 animate-fade-in">
                 {/* Header with back button */}
                 <div className="flex items-center gap-4">
                   <Button 
                     variant="ghost" 
                     onClick={() => navigate("/")}
-                    className="hover:bg-gray-100"
+                    className="hover:bg-gray-100 transition-all duration-200 hover:scale-105"
                   >
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Back to Dashboard
@@ -229,18 +230,22 @@ export default function CampaignDetails() {
                 </div>
 
                 {/* Campaign Header */}
-                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md">
                   <div className="flex items-center justify-between mb-6">
                     <div>
                       <div className="flex items-center gap-3 mb-2">
                         <h1 className="text-3xl font-bold text-gray-900">{campaign.name}</h1>
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStageColor(campaign.stage)}`}>
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 ${getStageColor(campaign.stage)}`}>
                           {campaign.status}
                         </span>
                       </div>
                       <p className="text-gray-600">Created on {new Date(campaign.createdAt).toLocaleDateString()}</p>
                     </div>
                     <div className="flex gap-3">
+                      <DeleteCampaignDialog 
+                        campaignName={campaign.name} 
+                        campaignId={campaign.id} 
+                      />
                       {campaign.stage === "draft" && (
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -248,9 +253,9 @@ export default function CampaignDetails() {
                               <Button 
                                 onClick={launchCampaign}
                                 disabled={isLaunching || !canLaunchCampaign}
-                                className={`${
+                                className={`transition-all duration-300 ${
                                   canLaunchCampaign 
-                                    ? "bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600" 
+                                    ? "bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 hover:scale-105" 
                                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                                 }`}
                               >
@@ -276,13 +281,13 @@ export default function CampaignDetails() {
                         </Tooltip>
                       )}
                       {campaign.stage === "active" && (
-                        <Button onClick={pauseCampaign} variant="outline">
+                        <Button onClick={pauseCampaign} variant="outline" className="transition-all duration-200 hover:scale-105">
                           <Pause className="w-4 h-4 mr-2" />
                           Pause Campaign
                         </Button>
                       )}
                       {campaign.stage === "paused" && (
-                        <Button onClick={resumeCampaign} className="bg-green-600 hover:bg-green-700">
+                        <Button onClick={resumeCampaign} className="bg-green-600 hover:bg-green-700 transition-all duration-200 hover:scale-105">
                           <Rocket className="w-4 h-4 mr-2" />
                           Resume Campaign
                         </Button>
@@ -297,28 +302,32 @@ export default function CampaignDetails() {
                       <div className="flex items-center justify-between">
                         <h3 className="text-lg font-semibold text-gray-900">Campaign Goal</h3>
                         {!isEditingGoal && (
-                          <Button onClick={startGoalEdit} variant="ghost" size="sm">
+                          <Button onClick={startGoalEdit} variant="ghost" size="sm" className="transition-all duration-200 hover:scale-110">
                             <Edit className="w-4 h-4" />
                           </Button>
                         )}
                       </div>
                       {isEditingGoal ? (
-                        <div className="flex gap-2">
+                        <div className="space-y-3 animate-fade-in">
                           <Input
                             value={draftGoal}
                             onChange={(e) => setDraftGoal(e.target.value)}
-                            className="flex-1"
+                            className="w-full transition-all duration-200 focus:scale-[1.02]"
                             placeholder="Enter campaign goal..."
                           />
-                          <Button onClick={saveGoal} size="sm" className="bg-green-600 hover:bg-green-700">
-                            <Save className="w-4 h-4" />
-                          </Button>
-                          <Button onClick={cancelGoalEdit} size="sm" variant="outline">
-                            <X className="w-4 h-4" />
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button onClick={saveGoal} size="sm" className="bg-green-600 hover:bg-green-700 transition-all duration-200 hover:scale-105">
+                              <Save className="w-4 h-4 mr-2" />
+                              Save
+                            </Button>
+                            <Button onClick={cancelGoalEdit} size="sm" variant="outline" className="transition-all duration-200 hover:scale-105">
+                              <X className="w-4 h-4 mr-2" />
+                              Cancel
+                            </Button>
+                          </div>
                         </div>
                       ) : (
-                        <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">{campaign.goal}</p>
+                        <p className="text-gray-700 bg-gray-50 p-3 rounded-lg transition-all duration-200 hover:bg-gray-100">{campaign.goal}</p>
                       )}
                     </div>
 
@@ -327,32 +336,32 @@ export default function CampaignDetails() {
                       <div className="flex items-center justify-between">
                         <h3 className="text-lg font-semibold text-gray-900">Target Audience</h3>
                         {!isEditingAudience && (
-                          <Button onClick={startAudienceEdit} variant="ghost" size="sm">
+                          <Button onClick={startAudienceEdit} variant="ghost" size="sm" className="transition-all duration-200 hover:scale-110">
                             <Edit className="w-4 h-4" />
                           </Button>
                         )}
                       </div>
                       {isEditingAudience ? (
-                        <div className="space-y-2">
+                        <div className="space-y-2 animate-fade-in">
                           <Textarea
                             value={draftAudience}
                             onChange={(e) => setDraftAudience(e.target.value)}
-                            className="min-h-[80px]"
+                            className="min-h-[80px] transition-all duration-200 focus:scale-[1.02]"
                             placeholder="Describe your target audience..."
                           />
                           <div className="flex gap-2">
-                            <Button onClick={saveAudience} size="sm" className="bg-green-600 hover:bg-green-700">
+                            <Button onClick={saveAudience} size="sm" className="bg-green-600 hover:bg-green-700 transition-all duration-200 hover:scale-105">
                               <Save className="w-4 h-4 mr-2" />
                               Save
                             </Button>
-                            <Button onClick={cancelAudienceEdit} size="sm" variant="outline">
+                            <Button onClick={cancelAudienceEdit} size="sm" variant="outline" className="transition-all duration-200 hover:scale-105">
                               <X className="w-4 h-4 mr-2" />
                               Cancel
                             </Button>
                           </div>
                         </div>
                       ) : (
-                        <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">{campaign.audience}</p>
+                        <p className="text-gray-700 bg-gray-50 p-3 rounded-lg transition-all duration-200 hover:bg-gray-100">{campaign.audience}</p>
                       )}
                     </div>
                   </div>
@@ -365,7 +374,7 @@ export default function CampaignDetails() {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-3">
                       <div
-                        className="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-300"
+                        className="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-500 ease-out"
                         style={{ width: `${campaign.progress}%` }}
                       />
                     </div>
@@ -373,12 +382,12 @@ export default function CampaignDetails() {
 
                   {/* Launch Requirements */}
                   {campaign.stage === "draft" && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 animate-fade-in">
                       <h4 className="font-medium text-blue-900 mb-3">Ready to Launch?</h4>
                       <div className="space-y-2 text-sm">
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 transition-all duration-200 hover:scale-[1.02]">
                           {hasEmailTemplate ? (
-                            <Check className="w-5 h-5 text-green-500" />
+                            <Check className="w-5 h-5 text-green-500 animate-scale-in" />
                           ) : (
                             <AlertCircle className="w-5 h-5 text-gray-400" />
                           )}
@@ -386,9 +395,9 @@ export default function CampaignDetails() {
                             Email template created
                           </span>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 transition-all duration-200 hover:scale-[1.02]">
                           {leads.length > 0 ? (
-                            <Check className="w-5 h-5 text-green-500" />
+                            <Check className="w-5 h-5 text-green-500 animate-scale-in" />
                           ) : (
                             <AlertCircle className="w-5 h-5 text-gray-400" />
                           )}
@@ -396,9 +405,9 @@ export default function CampaignDetails() {
                             Target audience generated ({leads.length} leads)
                           </span>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 transition-all duration-200 hover:scale-[1.02]">
                           {hasSchedule ? (
-                            <Check className="w-5 h-5 text-green-500" />
+                            <Check className="w-5 h-5 text-green-500 animate-scale-in" />
                           ) : (
                             <AlertCircle className="w-5 h-5 text-gray-400" />
                           )}
@@ -418,16 +427,16 @@ export default function CampaignDetails() {
 
                 {/* Launching Animation */}
                 {isLaunching && (
-                  <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 text-center">
+                  <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 text-center animate-scale-in">
                     <div className="flex flex-col items-center space-y-4">
                       <Loader className="w-16 h-16 text-blue-500 animate-spin" />
                       <div className="space-y-2">
                         <h3 className="text-xl font-bold text-gray-900">Launching Your Campaign...</h3>
                         <div className="space-y-1 text-sm text-gray-600">
-                          <p>✓ Validating email templates</p>
-                          <p>✓ Preparing lead list ({leads.length} contacts)</p>
-                          <p>✓ Setting up delivery schedule</p>
-                          <p>✓ Initializing tracking systems</p>
+                          <p className="animate-fade-in">✓ Validating email templates</p>
+                          <p className="animate-fade-in" style={{ animationDelay: '0.5s' }}>✓ Preparing lead list ({leads.length} contacts)</p>
+                          <p className="animate-fade-in" style={{ animationDelay: '1s' }}>✓ Setting up delivery schedule</p>
+                          <p className="animate-fade-in" style={{ animationDelay: '1.5s' }}>✓ Initializing tracking systems</p>
                         </div>
                       </div>
                     </div>
@@ -436,14 +445,16 @@ export default function CampaignDetails() {
 
                 {/* Campaign Dashboard for Active and Paused Campaigns */}
                 {(campaign.stage === "active" || campaign.stage === "paused") && (
-                  <CampaignDashboard campaign={campaign} leads={leads} />
+                  <div className="animate-fade-in">
+                    <CampaignDashboard campaign={campaign} leads={leads} />
+                  </div>
                 )}
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md hover:scale-[1.02]">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600">
+                      <div className="p-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300 hover:scale-110">
                         <Send className="w-6 h-6 text-white" />
                       </div>
                       <div>
@@ -453,9 +464,9 @@ export default function CampaignDetails() {
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md hover:scale-[1.02]">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-3 rounded-lg bg-gradient-to-r from-green-500 to-green-600">
+                      <div className="p-3 rounded-lg bg-gradient-to-r from-green-500 to-green-600 transition-all duration-300 hover:scale-110">
                         <Target className="w-6 h-6 text-white" />
                       </div>
                       <div>
@@ -465,9 +476,9 @@ export default function CampaignDetails() {
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md hover:scale-[1.02]">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-3 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600">
+                      <div className="p-3 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 transition-all duration-300 hover:scale-110">
                         <Users className="w-6 h-6 text-white" />
                       </div>
                       <div>
@@ -481,23 +492,29 @@ export default function CampaignDetails() {
                 </div>
 
                 {/* Email Template Section */}
-                <EmailTemplateSection 
-                  campaign={campaign} 
-                  onTemplateChange={handleEmailTemplateUpdate}
-                />
+                <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
+                  <EmailTemplateSection 
+                    campaign={campaign} 
+                    onTemplateChange={handleEmailTemplateUpdate}
+                  />
+                </div>
 
                 {/* Lead List Section */}
-                <LeadListSection 
-                  campaign={campaign} 
-                  onLeadsUpdate={handleLeadsUpdate}
-                />
+                <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                  <LeadListSection 
+                    campaign={campaign} 
+                    onLeadsUpdate={handleLeadsUpdate}
+                  />
+                </div>
 
                 {/* Campaign Schedule Section */}
-                <CampaignScheduleSection
-                  startDate={campaign.startDate}
-                  endDate={campaign.endDate}
-                  onScheduleUpdate={handleScheduleUpdate}
-                />
+                <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
+                  <CampaignScheduleSection
+                    startDate={campaign.startDate}
+                    endDate={campaign.endDate}
+                    onScheduleUpdate={handleScheduleUpdate}
+                  />
+                </div>
               </main>
             </div>
           </div>
