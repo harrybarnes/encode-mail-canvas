@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Pause, Play, Rocket, Mail, Users, Calendar, Settings, CheckCircle, Circle } from "lucide-react";
@@ -60,6 +59,7 @@ export default function CampaignDetails() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [leads, setLeads] = useState<Lead[]>(mockLeads);
+  const [hasEmailTemplate, setHasEmailTemplate] = useState(false);
   const readyToLaunch = currentTaskIndex === launchTasks.length;
 
   useEffect(() => {
@@ -108,6 +108,10 @@ export default function CampaignDetails() {
 
   const handleLeadsUpdate = (updatedLeads: Lead[]) => {
     setLeads(updatedLeads);
+  };
+
+  const handleTemplateChange = (hasTemplate: boolean) => {
+    setHasEmailTemplate(hasTemplate);
   };
 
   return (
@@ -216,7 +220,7 @@ export default function CampaignDetails() {
             <TabsContent value="settings" className="space-y-6 animate-fade-in">
               <EmailTemplateSection 
                 campaign={mockCampaignState} 
-                onUpdate={handleCampaignUpdate}
+                onTemplateChange={handleTemplateChange}
               />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <LeadListSection 
@@ -313,7 +317,7 @@ export default function CampaignDetails() {
             <div className="space-y-6">
               <EmailTemplateSection 
                 campaign={mockCampaignState} 
-                onUpdate={handleCampaignUpdate}
+                onTemplateChange={handleTemplateChange}
               />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <LeadListSection 
