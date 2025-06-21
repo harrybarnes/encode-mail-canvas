@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Plus, Search, Filter, Grid3X3, List, Calendar, Users, Target, MoreVertical } from "lucide-react";
 import { Header } from "@/components/dashboard/Header";
@@ -20,6 +21,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const campaigns = [
   {
@@ -98,12 +100,27 @@ const Campaigns = () => {
   const [view, setView] = useState<"grid" | "list">("grid");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const { toast } = useToast();
 
   const filteredCampaigns = campaigns.filter(campaign => {
     const matchesSearch = campaign.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filterStatus === "all" || campaign.status === filterStatus;
     return matchesSearch && matchesFilter;
   });
+
+  const handleCampaignSubmit = (campaignData: { name: string; goal: string; audience: string }) => {
+    console.log("Creating campaign:", campaignData);
+    toast({
+      title: "Campaign Created",
+      description: `${campaignData.name} has been created successfully.`,
+    });
+    setDialogOpen(false);
+  };
+
+  const handleCampaignCancel = () => {
+    setDialogOpen(false);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50/30">
@@ -117,7 +134,7 @@ const Campaigns = () => {
             <p className="text-gray-600 mt-1">Manage and monitor your email campaigns</p>
           </div>
           
-          <Dialog>
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button className="bg-black hover:bg-gray-800 text-white rounded-xl px-6">
                 <Plus className="w-4 h-4 mr-2" />
@@ -125,13 +142,10 @@ const Campaigns = () => {
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl bg-white border border-gray-100 rounded-2xl">
-              <DialogHeader>
-                <DialogTitle className="text-xl font-semibold text-gray-900">Create New Campaign</DialogTitle>
-                <DialogDescription className="text-gray-600">
-                  Set up a new email campaign to reach your leads
-                </DialogDescription>
-              </DialogHeader>
-              <NewCampaignForm />
+              <NewCampaignForm 
+                onSubmit={handleCampaignSubmit}
+                onCancel={handleCampaignCancel}
+              />
             </DialogContent>
           </Dialog>
         </div>
@@ -269,7 +283,7 @@ const Campaigns = () => {
                 : "Create your first campaign to get started"}
             </p>
             {!searchTerm && filterStatus === "all" && (
-              <Dialog>
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger asChild>
                   <Button className="bg-black hover:bg-gray-800 text-white rounded-xl">
                     <Plus className="w-4 h-4 mr-2" />
@@ -277,13 +291,10 @@ const Campaigns = () => {
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl bg-white border border-gray-100 rounded-2xl">
-                  <DialogHeader>
-                    <DialogTitle className="text-xl font-semibold text-gray-900">Create New Campaign</DialogTitle>
-                    <DialogDescription className="text-gray-600">
-                      Set up a new email campaign to reach your leads
-                    </DialogDescription>
-                  </DialogHeader>
-                  <NewCampaignForm />
+                  <NewCampaignForm 
+                    onSubmit={handleCampaignSubmit}
+                    onCancel={handleCampaignCancel}
+                  />
                 </DialogContent>
               </Dialog>
             )}
