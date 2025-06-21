@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -100,33 +100,6 @@ const chartConfig = {
   },
 };
 
-// Custom animated line component
-const AnimatedLine = ({ dataKey, stroke, ...props }: any) => {
-  const [animationProgress, setAnimationProgress] = useState(0);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setAnimationProgress(1);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  return (
-    <Line
-      {...props}
-      dataKey={dataKey}
-      stroke={stroke}
-      strokeWidth={3}
-      dot={{ fill: stroke, strokeWidth: 2, r: 6 }}
-      activeDot={{ r: 8 }}
-      strokeDasharray={`${animationProgress * 1000} 1000`}
-      style={{
-        animation: `drawLine 2s ease-out forwards`,
-      }}
-    />
-  );
-};
-
 export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
   const [selectedPeriod, setSelectedPeriod] = useState("7d");
 
@@ -136,7 +109,7 @@ export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
   return (
     <div className="space-y-6">
       {/* Campaign Plan Summary */}
-      <Card className="animate-fade-in">
+      <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600">
@@ -152,15 +125,15 @@ export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center p-4 bg-blue-50 rounded-lg transition-all hover:scale-105">
+            <div className="text-center p-4 bg-blue-50 rounded-lg">
               <div className="text-2xl font-bold text-blue-600 mb-1">{leads.length}</div>
               <div className="text-sm text-blue-700">Total Contacts</div>
             </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg transition-all hover:scale-105">
+            <div className="text-center p-4 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-600 mb-1">{dailyEmailsTarget}</div>
               <div className="text-sm text-green-700">Emails per Day</div>
             </div>
-            <div className="text-center p-4 bg-purple-50 rounded-lg transition-all hover:scale-105">
+            <div className="text-center p-4 bg-purple-50 rounded-lg">
               <div className="text-2xl font-bold text-purple-600 mb-1">{totalDays}</div>
               <div className="text-sm text-purple-700">Campaign Duration</div>
             </div>
@@ -169,7 +142,7 @@ export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
       </Card>
 
       {/* Activity Chart - Full Width */}
-      <Card className="animate-fade-in">
+      <Card>
         <CardHeader>
           <CardTitle>Campaign Performance</CardTitle>
           <CardDescription>
@@ -191,15 +164,21 @@ export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
                     content={<ChartTooltipContent />}
                     labelFormatter={(value) => new Date(value).toLocaleDateString()}
                   />
-                  <AnimatedLine 
+                  <Line 
                     type="monotone" 
                     dataKey="sent" 
                     stroke={chartConfig.sent.color}
+                    strokeWidth={3}
+                    dot={{ fill: chartConfig.sent.color, strokeWidth: 2, r: 6 }}
+                    activeDot={{ r: 8 }}
                   />
-                  <AnimatedLine 
+                  <Line 
                     type="monotone" 
                     dataKey="replies" 
                     stroke={chartConfig.replies.color}
+                    strokeWidth={3}
+                    dot={{ fill: chartConfig.replies.color, strokeWidth: 2, r: 6 }}
+                    activeDot={{ r: 8 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -209,7 +188,7 @@ export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
       </Card>
 
       {/* Activity Log */}
-      <Card className="animate-fade-in">
+      <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600">
@@ -225,12 +204,8 @@ export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {mockActivityLog.map((activity, index) => (
-              <div 
-                key={activity.id} 
-                className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg transition-all hover:bg-gray-100 hover:scale-[1.02] animate-fade-in"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
+            {mockActivityLog.map((activity) => (
+              <div key={activity.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
                 <div className="flex-shrink-0">
                   {activity.type === "sent" ? (
                     <div className="p-2 bg-blue-100 rounded-lg">
@@ -273,17 +248,6 @@ export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
           </div>
         </CardContent>
       </Card>
-
-      <style jsx>{`
-        @keyframes drawLine {
-          from {
-            stroke-dasharray: 0 1000;
-          }
-          to {
-            stroke-dasharray: 1000 1000;
-          }
-        }
-      `}</style>
     </div>
   );
 }
