@@ -114,10 +114,10 @@ const getBadgeVariant = (stage: string) => {
 
 const getBadgeClassName = (stage: string) => {
   switch (stage) {
-    case "active": return "bg-blue-500 text-white hover:bg-blue-600";
-    case "completed": return "bg-green-500 text-white hover:bg-green-600";
-    case "paused": return "bg-yellow-500 text-white hover:bg-yellow-600";
-    case "draft": return "bg-gray-500 text-white hover:bg-gray-600";
+    case "active": return "bg-blue-100 text-blue-600 hover:bg-blue-200";
+    case "completed": return "bg-green-100 text-green-600 hover:bg-green-200";
+    case "paused": return "bg-yellow-100 text-yellow-600 hover:bg-yellow-200";
+    case "draft": return "bg-gray-100 text-gray-600 hover:bg-gray-200";
     default: return "";
   }
 };
