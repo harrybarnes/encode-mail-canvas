@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import confetti from "canvas-confetti";
 import { ArrowLeft, Target, Users, Clock, Send, Mail, Edit, Save, X, Rocket, Pause, Loader, Check, AlertCircle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -34,21 +35,21 @@ interface Lead {
   title: string;
 }
 
-// Mock campaign data - in real app this would come from backend
+// Mock campaign data - updated to match dashboard data
 const mockCampaigns = [
   {
     id: 1,
     name: "Product Demo Outreach",
-    stage: "draft",
-    sent: 0,
-    replies: 0,
-    status: "Draft",
+    stage: "active",
+    sent: 45,
+    replies: 8,
+    status: "In Progress",
     goal: "Get 10 product demos",
     audience: "B2B SaaS founders with 10-50 employees, looking to improve their sales process",
-    progress: 20,
+    progress: 80,
     createdAt: "2024-01-15",
-    startDate: "",
-    endDate: "",
+    startDate: "2024-01-22",
+    endDate: "2024-01-29",
   },
   {
     id: 2,
@@ -63,6 +64,34 @@ const mockCampaigns = [
     createdAt: "2024-01-20",
     startDate: "",
     endDate: "",
+  },
+  {
+    id: 3,
+    name: "Investor Outreach",
+    stage: "paused",
+    sent: 120,
+    replies: 15,
+    status: "Paused",
+    goal: "Connect with 20 investors",
+    audience: "VC firms and angel investors in the SaaS space",
+    progress: 60,
+    createdAt: "2024-01-10",
+    startDate: "2024-01-12",
+    endDate: "2024-01-19",
+  },
+  {
+    id: 4,
+    name: "Customer Success",
+    stage: "completed",
+    sent: 200,
+    replies: 45,
+    status: "Completed",
+    goal: "Improve retention by 15%",
+    audience: "Existing customers who haven't engaged recently",
+    progress: 100,
+    createdAt: "2024-01-05",
+    startDate: "2024-01-07",
+    endDate: "2024-01-14",
   },
 ];
 
@@ -209,6 +238,13 @@ export default function CampaignDetails() {
       status: "In Progress",
       progress: 30
     } : null);
+    
+    // Trigger confetti animation
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
     
     setIsLaunching(false);
     toast({
