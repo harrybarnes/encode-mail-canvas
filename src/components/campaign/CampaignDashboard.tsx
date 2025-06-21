@@ -218,7 +218,7 @@ export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
           </div>
           
           {/* Activity Filters */}
-          <div className="flex flex-wrap gap-2 mt-8">
+          <div className="flex flex-wrap gap-2 mt-10">
             {filterButtons.map((filter) => {
               const Icon = filter.icon;
               return (
@@ -227,7 +227,11 @@ export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
                   variant={activityFilter === filter.key ? "secondary" : "outline"}
                   size="sm"
                   onClick={() => setActivityFilter(filter.key)}
-                  className="h-8"
+                  className={`h-8 ${
+                    activityFilter === filter.key 
+                      ? "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100" 
+                      : ""
+                  }`}
                 >
                   <Icon className="w-4 h-4 mr-1.5" />
                   {filter.label}
