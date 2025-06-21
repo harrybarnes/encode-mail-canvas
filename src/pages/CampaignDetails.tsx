@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Target, Users, Clock, Send, Mail, Edit, Save, X, Rocket, Pause, Loader, Check, AlertCircle, Trash2 } from "lucide-react";
@@ -352,80 +353,83 @@ export default function CampaignDetails() {
       );
     }
 
-    // For active/paused campaigns, show tabs
+    // For active/paused campaigns, show stats above tabs
     return (
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="settings">Campaign Settings</TabsTrigger>
-          <TabsTrigger value="activity">Campaign Activity</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="settings" className="space-y-6">
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600">
-                  <Send className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{campaign.sent}</p>
-                  <p className="text-gray-600 text-sm">Emails Sent</p>
-                </div>
+      <>
+        {/* Stats Grid - Above Tabs */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600">
+                <Send className="w-6 h-6 text-white" />
               </div>
-            </div>
-
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-lg bg-gradient-to-r from-green-500 to-green-600">
-                  <Target className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{campaign.replies}</p>
-                  <p className="text-gray-600 text-sm">Replies Received</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600">
-                  <Users className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {campaign.sent > 0 ? ((campaign.replies / campaign.sent) * 100).toFixed(1) : '0'}%
-                  </p>
-                  <p className="text-gray-600 text-sm">Reply Rate</p>
-                </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">{campaign.sent}</p>
+                <p className="text-gray-600 text-sm">Emails Sent</p>
               </div>
             </div>
           </div>
 
-          {/* Email Template Section */}
-          <EmailTemplateSection 
-            campaign={campaign} 
-            onTemplateChange={handleEmailTemplateUpdate}
-          />
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-3 rounded-lg bg-gradient-to-r from-green-500 to-green-600">
+                <Target className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">{campaign.replies}</p>
+                <p className="text-gray-600 text-sm">Replies Received</p>
+              </div>
+            </div>
+          </div>
 
-          {/* Lead List Section */}
-          <LeadListSection 
-            campaign={campaign} 
-            onLeadsUpdate={handleLeadsUpdate}
-          />
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-3 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">
+                  {campaign.sent > 0 ? ((campaign.replies / campaign.sent) * 100).toFixed(1) : '0'}%
+                </p>
+                <p className="text-gray-600 text-sm">Reply Rate</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          {/* Campaign Schedule Section */}
-          <CampaignScheduleSection
-            startDate={campaign.startDate}
-            endDate={campaign.endDate}
-            onScheduleUpdate={handleScheduleUpdate}
-          />
-        </TabsContent>
-        
-        <TabsContent value="activity" className="space-y-6">
-          <CampaignDashboard campaign={campaign} leads={leads} />
-        </TabsContent>
-      </Tabs>
+        {/* Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="settings">Campaign Settings</TabsTrigger>
+            <TabsTrigger value="activity">Campaign Activity</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="settings" className="space-y-6">
+            {/* Email Template Section */}
+            <EmailTemplateSection 
+              campaign={campaign} 
+              onTemplateChange={handleEmailTemplateUpdate}
+            />
+
+            {/* Lead List Section */}
+            <LeadListSection 
+              campaign={campaign} 
+              onLeadsUpdate={handleLeadsUpdate}
+            />
+
+            {/* Campaign Schedule Section */}
+            <CampaignScheduleSection
+              startDate={campaign.startDate}
+              endDate={campaign.endDate}
+              onScheduleUpdate={handleScheduleUpdate}
+            />
+          </TabsContent>
+          
+          <TabsContent value="activity" className="space-y-6">
+            <CampaignDashboard campaign={campaign} leads={leads} />
+          </TabsContent>
+        </Tabs>
+      </>
     );
   };
 
