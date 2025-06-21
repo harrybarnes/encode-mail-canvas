@@ -14,9 +14,10 @@ interface Campaign {
 
 interface EmailTemplateSectionProps {
   campaign: Campaign;
+  onTemplateChange?: (hasTemplate: boolean) => void;
 }
 
-export function EmailTemplateSection({ campaign }: EmailTemplateSectionProps) {
+export function EmailTemplateSection({ campaign, onTemplateChange }: EmailTemplateSectionProps) {
   const [emailTemplate, setEmailTemplate] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [draftTemplate, setDraftTemplate] = useState("");
@@ -53,6 +54,7 @@ P.S. I'd be happy to send over some case studies from similar companies we've wo
   const saveTemplate = () => {
     setEmailTemplate(draftTemplate);
     setIsEditing(false);
+    onTemplateChange?.(true);
   };
 
   const cancelEditing = () => {

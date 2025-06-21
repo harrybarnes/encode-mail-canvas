@@ -1,24 +1,40 @@
+
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Target, Users, Clock, Send, Mail } from "lucide-react";
+import { ArrowLeft, Target, Users, Clock, Send, Mail, Edit, Save, X, Rocket, Pause, Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { Header } from "@/components/dashboard/Header";
 import { EmailTemplateSection } from "@/components/campaign/EmailTemplateSection";
+import { LeadListSection } from "@/components/campaign/LeadListSection";
+import { CampaignScheduleSection } from "@/components/campaign/CampaignScheduleSection";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+
+interface Lead {
+  id: number;
+  name: string;
+  email: string;
+  company: string;
+  title: string;
+}
 
 // Mock campaign data - in real app this would come from backend
 const mockCampaigns = [
   {
     id: 1,
     name: "Product Demo Outreach",
-    stage: "active",
-    sent: 45,
-    replies: 8,
-    status: "In Progress",
+    stage: "draft",
+    sent: 0,
+    replies: 0,
+    status: "Draft",
     goal: "Get 10 product demos",
     audience: "B2B SaaS founders with 10-50 employees, looking to improve their sales process",
-    progress: 80,
+    progress: 20,
     createdAt: "2024-01-15",
+    startDate: "",
+    endDate: "",
   },
   {
     id: 2,
@@ -31,14 +47,24 @@ const mockCampaigns = [
     audience: "Marketing agencies with complementary services",
     progress: 20,
     createdAt: "2024-01-20",
+    startDate: "",
+    endDate: "",
   },
 ];
 
 export default function CampaignDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast } = useToast();
   
-  const campaign = mockCampaigns.find(c => c.id === parseInt(id || ""));
+  const [campaign, setCampaign] = useState(() => 
+    mockCampaigns.find(c => c.id === parseInt(id || ""))
+  );
+  const [isEditingGoal, setIsEditingGoal] = useState(false);
+  const [draftGoal, setDraftGoal] = useState(campaign?.goal || "");
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [hasEmailTemplate, setHasEmailTemplate] = useState(false);
+  const [isLaunching, setIsLaunching] = useState(false);
 
   if (!campaign) {
     return (
@@ -74,6 +100,76 @@ export default function CampaignDetails() {
     }
   };
 
+  const saveGoal = () => {
+    setCampaign(prev => prev ? { ...prev, goal: draftGoal } : null);
+    setIsEditingGoal(false);
+    toast({
+      title: "Goal updated",
+      description: "Campaign goal has been successfully updated.",
+    });
+  };
+
+  const cancelGoalEdit = () => {
+    setDraftGoal(campaign?.goal || "");
+    setIsEditingGoal(false);
+  };
+
+  const startGoalEdit = () => {
+    setDraftGoal(campaign?.goal || "");
+    setIsEditingGoal(true);
+  };
+
+  const handleScheduleUpdate = (startDate: string, endDate: string) => {
+    setCampaign(prev => prev ? { ...prev, startDate, endDate } : null);
+    toast({
+      title: "Schedule updated",
+      description: "Campaign schedule has been successfully updated.",
+    });
+  };
+
+  const handleLeadsUpdate = (newLeads: Lead[]) => {
+    setLeads(newLeads);
+  };
+
+  const handleEmailTemplateUpdate = (hasTemplate: boolean) => {
+    setHasEmailTemplate(hasTemplate);
+  };
+
+  const canLaunchCampaign = campaign.stage === "draft" && hasEmailTemplate && leads.length > 0;
+
+  const launchCampaign = async () => {
+    setIsLaunching(true);
+    
+    // Simulate campaign launch process
+    await new Promise(resolve => setTimeout(resolve, 4000));
+    
+    setCampaign(prev => prev ? { 
+      ...prev, 
+      stage: "active", 
+      status: "In Progress",
+      progress: 30
+    } : null);
+    
+    setIsLaunching(false);
+    toast({
+      title: "Campaign Launched! 🚀",
+      description: "Your campaign is now live and emails are being sent.",
+    });
+  };
+
+  const pauseCampaign = () => {
+    setCampaign(prev => prev ? { 
+      ...prev, 
+      stage: "paused", 
+      status: "Paused"
+    } : null);
+    
+    toast({
+      title: "Campaign Paused",
+      description: "Your campaign has been paused. You can resume it anytime.",
+    });
+  };
+
   return (
     <SidebarProvider>
       <div className="min-h-screen bg-slate-50 w-full">
@@ -106,9 +202,63 @@ export default function CampaignDetails() {
                     </div>
                     <p className="text-gray-600">Created on {new Date(campaign.createdAt).toLocaleDateString()}</p>
                   </div>
-                  <Button className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
-                    Edit Campaign
-                  </Button>
+                  <div className="flex gap-3">
+                    {campaign.stage === "draft" && canLaunchCampaign && (
+                      <Button 
+                        onClick={launchCampaign}
+                        disabled={isLaunching}
+                        className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600"
+                      >
+                        {isLaunching ? (
+                          <>
+                            <Loader className="w-4 h-4 mr-2 animate-spin" />
+                            Launching Campaign...
+                          </>
+                        ) : (
+                          <>
+                            <Rocket className="w-4 h-4 mr-2" />
+                            Launch Campaign
+                          </>
+                        )}
+                      </Button>
+                    )}
+                    {campaign.stage === "active" && (
+                      <Button onClick={pauseCampaign} variant="outline">
+                        <Pause className="w-4 h-4 mr-2" />
+                        Pause Campaign
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Campaign Goal */}
+                <div className="mb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-lg font-semibold text-gray-900">Campaign Goal</h3>
+                    {!isEditingGoal && (
+                      <Button onClick={startGoalEdit} variant="ghost" size="sm">
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                  {isEditingGoal ? (
+                    <div className="flex gap-2">
+                      <Input
+                        value={draftGoal}
+                        onChange={(e) => setDraftGoal(e.target.value)}
+                        className="flex-1"
+                        placeholder="Enter campaign goal..."
+                      />
+                      <Button onClick={saveGoal} size="sm" className="bg-green-600 hover:bg-green-700">
+                        <Save className="w-4 h-4" />
+                      </Button>
+                      <Button onClick={cancelGoalEdit} size="sm" variant="outline">
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <p className="text-gray-700">{campaign.goal}</p>
+                  )}
                 </div>
 
                 {/* Progress Bar */}
@@ -124,7 +274,46 @@ export default function CampaignDetails() {
                     />
                   </div>
                 </div>
+
+                {/* Launch Requirements */}
+                {campaign.stage === "draft" && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 className="font-medium text-blue-900 mb-2">Ready to Launch?</h4>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${hasEmailTemplate ? 'bg-green-500' : 'bg-gray-300'}`} />
+                        <span className={hasEmailTemplate ? 'text-green-700' : 'text-gray-600'}>
+                          Email template created
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${leads.length > 0 ? 'bg-green-500' : 'bg-gray-300'}`} />
+                        <span className={leads.length > 0 ? 'text-green-700' : 'text-gray-600'}>
+                          Target audience generated ({leads.length} leads)
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
+
+              {/* Launching Animation */}
+              {isLaunching && (
+                <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 text-center">
+                  <div className="flex flex-col items-center space-y-4">
+                    <Loader className="w-16 h-16 text-blue-500 animate-spin" />
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-bold text-gray-900">Launching Your Campaign...</h3>
+                      <div className="space-y-1 text-sm text-gray-600">
+                        <p>✓ Validating email templates</p>
+                        <p>✓ Preparing lead list ({leads.length} contacts)</p>
+                        <p>✓ Setting up delivery schedule</p>
+                        <p>✓ Initializing tracking systems</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -168,19 +357,28 @@ export default function CampaignDetails() {
               </div>
 
               {/* Email Template Section */}
-              <EmailTemplateSection campaign={campaign} />
+              <EmailTemplateSection 
+                campaign={campaign} 
+                onTemplateChange={handleEmailTemplateUpdate}
+              />
 
-              {/* Campaign Details */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                  <h2 className="text-xl font-bold text-gray-900 mb-4">Campaign Goal</h2>
-                  <p className="text-gray-700">{campaign.goal}</p>
-                </div>
+              {/* Lead List Section */}
+              <LeadListSection 
+                campaign={campaign} 
+                onLeadsUpdate={handleLeadsUpdate}
+              />
 
-                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                  <h2 className="text-xl font-bold text-gray-900 mb-4">Target Audience</h2>
-                  <p className="text-gray-700">{campaign.audience}</p>
-                </div>
+              {/* Campaign Schedule Section */}
+              <CampaignScheduleSection
+                startDate={campaign.startDate}
+                endDate={campaign.endDate}
+                onScheduleUpdate={handleScheduleUpdate}
+              />
+
+              {/* Target Audience Info */}
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Target Audience Description</h2>
+                <p className="text-gray-700">{campaign.audience}</p>
               </div>
             </main>
           </div>
