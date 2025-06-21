@@ -67,7 +67,7 @@ export function Sidebar() {
                     <NavLink 
                       to={item.url} 
                       end 
-                      className={`${getNavCls({ isActive: isActive(item.url) })} rounded-lg px-3 py-2 transition-all duration-200 flex items-center ${collapsed ? 'justify-center w-full' : 'gap-3'}`}
+                      className={`${getNavCls({ isActive: isActive(item.url) })} rounded-lg transition-all duration-200 flex items-center ${collapsed ? 'justify-center w-full px-2 py-2' : 'gap-3 px-3 py-2'}`}
                     >
                       <item.icon className="w-5 h-5" />
                       {!collapsed && (
