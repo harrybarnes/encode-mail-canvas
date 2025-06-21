@@ -178,23 +178,23 @@ export default function Campaigns() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-slate-50 w-full">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 w-full">
         <div className="flex w-full">
           <Sidebar />
           <div className="flex-1 flex flex-col">
             <Header />
-            <main className="flex-1 p-6 space-y-6">
+            <main className="flex-1 p-8 space-y-8">
               {/* Page Header */}
               <div className="flex items-center justify-between">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">Campaigns</h1>
-                  <p className="text-gray-600">
+                  <h1 className="text-4xl font-bold text-gray-900 mb-3">Campaigns</h1>
+                  <p className="text-gray-600 text-lg">
                     Manage and track all your cold email campaigns
                   </p>
                 </div>
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
+                    <Button className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:shadow-lg">
                       <Plus className="w-4 h-4 mr-2" />
                       New Campaign
                     </Button>
@@ -210,54 +210,54 @@ export default function Campaigns() {
 
               {/* Stats Cards */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <Card>
+                <Card className="glass-card rounded-2xl border-0">
                   <CardContent className="p-6">
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 rounded-xl bg-gray-900">
                         <Target className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
-                        <p className="text-gray-600 text-sm">Total Campaigns</p>
+                        <p className="text-3xl font-bold text-gray-900">{stats.total}</p>
+                        <p className="text-gray-600 text-sm font-medium">Total Campaigns</p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
-                <Card>
+                <Card className="glass-card rounded-2xl border-0">
                   <CardContent className="p-6">
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-lg bg-gradient-to-r from-green-500 to-green-600">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 rounded-xl bg-gray-700">
                         <Send className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <p className="text-2xl font-bold text-gray-900">{stats.active}</p>
-                        <p className="text-gray-600 text-sm">Active Campaigns</p>
+                        <p className="text-3xl font-bold text-gray-900">{stats.active}</p>
+                        <p className="text-gray-600 text-sm font-medium">Active Campaigns</p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
-                <Card>
+                <Card className="glass-card rounded-2xl border-0">
                   <CardContent className="p-6">
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-lg bg-gradient-to-r from-gray-500 to-gray-600">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 rounded-xl bg-gray-500">
                         <Clock className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <p className="text-2xl font-bold text-gray-900">{stats.draft}</p>
-                        <p className="text-gray-600 text-sm">Draft Campaigns</p>
+                        <p className="text-3xl font-bold text-gray-900">{stats.draft}</p>
+                        <p className="text-gray-600 text-sm font-medium">Draft Campaigns</p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
-                <Card>
+                <Card className="glass-card rounded-2xl border-0">
                   <CardContent className="p-6">
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 rounded-xl bg-gray-800">
                         <CheckCircle className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <p className="text-2xl font-bold text-gray-900">{stats.completed}</p>
-                        <p className="text-gray-600 text-sm">Completed</p>
+                        <p className="text-3xl font-bold text-gray-900">{stats.completed}</p>
+                        <p className="text-gray-600 text-sm font-medium">Completed</p>
                       </div>
                     </div>
                   </CardContent>
@@ -265,32 +265,32 @@ export default function Campaigns() {
               </div>
 
               {/* Filters and Search */}
-              <Card>
+              <Card className="glass-card rounded-2xl border-0">
                 <CardHeader>
-                  <CardTitle>All Campaigns</CardTitle>
-                  <CardDescription>
+                  <CardTitle className="text-xl font-bold text-gray-900">All Campaigns</CardTitle>
+                  <CardDescription className="text-gray-600">
                     Search, filter, and manage your campaigns
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                  <div className="flex flex-col sm:flex-row gap-4 mb-8">
                     <div className="flex-1">
                       <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <Input
                           placeholder="Search campaigns..."
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
-                          className="pl-10"
+                          className="pl-12 rounded-xl border-gray-200 focus:ring-black/10 h-12"
                         />
                       </div>
                     </div>
                     <Select value={statusFilter} onValueChange={setStatusFilter}>
-                      <SelectTrigger className="w-full sm:w-[180px]">
+                      <SelectTrigger className="w-full sm:w-[180px] rounded-xl border-gray-200 h-12">
                         <Filter className="w-4 h-4 mr-2" />
                         <SelectValue placeholder="Filter by status" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white/95 backdrop-blur-sm border border-gray-200/50">
                         <SelectItem value="all">All Statuses</SelectItem>
                         <SelectItem value="active">Active</SelectItem>
                         <SelectItem value="draft">Draft</SelectItem>
@@ -299,11 +299,11 @@ export default function Campaigns() {
                       </SelectContent>
                     </Select>
                     <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger className="w-full sm:w-[180px]">
+                      <SelectTrigger className="w-full sm:w-[180px] rounded-xl border-gray-200 h-12">
                         <Calendar className="w-4 h-4 mr-2" />
                         <SelectValue placeholder="Sort by" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white/95 backdrop-blur-sm border border-gray-200/50">
                         <SelectItem value="recent">Most Recent</SelectItem>
                         <SelectItem value="name">Name A-Z</SelectItem>
                         <SelectItem value="progress">Progress</SelectItem>
@@ -319,50 +319,50 @@ export default function Campaigns() {
                       return (
                         <Card
                           key={campaign.id}
-                          className="hover:shadow-lg transition-all duration-200 cursor-pointer group"
+                          className="glass-card rounded-2xl border-0 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
                           onClick={() => handleCampaignClick(campaign.id)}
                         >
-                          <CardHeader className="pb-3">
-                            <div className="flex items-center justify-between mb-2">
-                              <div className={`p-2 rounded-lg ${getStageColor(campaign.stage)}`}>
+                          <CardHeader className="pb-4">
+                            <div className="flex items-center justify-between mb-3">
+                              <div className={`p-2 rounded-xl ${getStageColor(campaign.stage)}`}>
                                 <StageIcon className="w-4 h-4" />
                               </div>
                               <Badge 
                                 variant={getBadgeVariant(campaign.stage)}
-                                className={getBadgeClassName(campaign.stage)}
+                                className={`${getBadgeClassName(campaign.stage)} rounded-lg font-medium`}
                               >
                                 {campaign.status}
                               </Badge>
                             </div>
-                            <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">
+                            <CardTitle className="text-lg group-hover:text-gray-700 transition-colors font-bold">
                               {campaign.name}
                             </CardTitle>
-                            <CardDescription className="text-sm">
+                            <CardDescription className="text-sm text-gray-600">
                               {campaign.goal}
                             </CardDescription>
                           </CardHeader>
                           <CardContent>
                             <div className="space-y-4">
-                              <div className="flex justify-between text-sm text-gray-600">
+                              <div className="flex justify-between text-sm text-gray-600 font-medium">
                                 <span>📤 {campaign.sent} sent</span>
                                 <span>💬 {campaign.replies} replies</span>
                                 <span>📊 {campaign.replyRate}%</span>
                               </div>
                               
                               <div className="space-y-2">
-                                <div className="flex justify-between text-sm">
+                                <div className="flex justify-between text-sm font-medium">
                                   <span>Progress</span>
                                   <span>{campaign.progress}%</span>
                                 </div>
                                 <div className="w-full bg-gray-200 rounded-full h-2">
                                   <div
-                                    className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+                                    className="bg-gray-900 h-2 rounded-full transition-all duration-300"
                                     style={{ width: `${campaign.progress}%` }}
                                   />
                                 </div>
                               </div>
                               
-                              <div className="text-xs text-gray-500">
+                              <div className="text-xs text-gray-500 font-medium">
                                 Created on {new Date(campaign.createdAt).toLocaleDateString()}
                               </div>
                             </div>
@@ -374,10 +374,10 @@ export default function Campaigns() {
 
                   {/* Empty state */}
                   {filteredCampaigns.length === 0 && (
-                    <div className="text-center py-12">
-                      <Target className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">No campaigns found</h3>
-                      <p className="text-gray-500 mb-4">
+                    <div className="text-center py-16">
+                      <Target className="w-16 h-16 text-gray-300 mx-auto mb-6" />
+                      <h3 className="text-xl font-bold text-gray-900 mb-3">No campaigns found</h3>
+                      <p className="text-gray-600 mb-6 text-lg">
                         {searchTerm || statusFilter !== "all" 
                           ? "Try adjusting your search or filter criteria"
                           : "Create your first campaign to get started"
@@ -386,7 +386,7 @@ export default function Campaigns() {
                       {!searchTerm && statusFilter === "all" && (
                         <Button 
                           onClick={() => setIsDialogOpen(true)}
-                          className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+                          className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-semibold"
                         >
                           <Plus className="w-4 h-4 mr-2" />
                           Create Campaign
