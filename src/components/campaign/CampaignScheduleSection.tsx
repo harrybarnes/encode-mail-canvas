@@ -18,8 +18,11 @@ export function CampaignScheduleSection({ startDate, endDate, onScheduleUpdate }
   const [draftEndDate, setDraftEndDate] = useState(endDate || "");
 
   const startEditing = () => {
-    setDraftStartDate(startDate || "");
-    setDraftEndDate(endDate || "");
+    const today = new Date().toISOString().split('T')[0];
+    const weekFromToday = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    
+    setDraftStartDate(startDate || today);
+    setDraftEndDate(endDate || weekFromToday);
     setIsEditing(true);
   };
 
@@ -32,6 +35,16 @@ export function CampaignScheduleSection({ startDate, endDate, onScheduleUpdate }
     setDraftStartDate(startDate || "");
     setDraftEndDate(endDate || "");
     setIsEditing(false);
+  };
+
+  const handleStartDateChange = (newStartDate: string) => {
+    setDraftStartDate(newStartDate);
+    // Auto-update end date to 7 days after start date
+    if (newStartDate) {
+      const startDateObj = new Date(newStartDate);
+      const endDateObj = new Date(startDateObj.getTime() + 7 * 24 * 60 * 60 * 1000);
+      setDraftEndDate(endDateObj.toISOString().split('T')[0]);
+    }
   };
 
   return (
@@ -68,7 +81,7 @@ export function CampaignScheduleSection({ startDate, endDate, onScheduleUpdate }
                   id="start-date"
                   type="date"
                   value={draftStartDate}
-                  onChange={(e) => setDraftStartDate(e.target.value)}
+                  onChange={(e) => handleStartDateChange(e.target.value)}
                   className="mt-1"
                 />
               </div>
