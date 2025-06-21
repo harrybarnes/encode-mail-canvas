@@ -24,9 +24,9 @@ const responseData = [
 ];
 
 const pieData = [
-  { name: "Opened", value: 35, color: "#6b7280" },
-  { name: "Replied", value: 15, color: "#374151" },
-  { name: "Bounced", value: 5, color: "#9ca3af" },
+  { name: "Opened", value: 35, color: "#10b981" },
+  { name: "Replied", value: 15, color: "#3b82f6" },
+  { name: "Bounced", value: 5, color: "#ef4444" },
   { name: "Unopened", value: 45, color: "#e5e7eb" },
 ];
 
@@ -116,11 +116,25 @@ const Analytics = () => {
                     <ResponsiveContainer width="100%" height={300}>
                       <BarChart data={campaignData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
-                        <XAxis dataKey="name" stroke="#6b7280" />
-                        <YAxis stroke="#6b7280" />
-                        <Bar dataKey="sent" fill="#e5e7eb" name="Sent" />
-                        <Bar dataKey="opened" fill="#9ca3af" name="Opened" />
-                        <Bar dataKey="replied" fill="#374151" name="Replied" />
+                        <XAxis dataKey="name" stroke="#9ca3af" fontSize={12} />
+                        <YAxis stroke="#9ca3af" fontSize={12} />
+                        <Bar dataKey="sent" fill="url(#sentGradient)" name="Sent" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="opened" fill="url(#openedGradient)" name="Opened" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="replied" fill="url(#repliedGradient)" name="Replied" radius={[4, 4, 0, 0]} />
+                        <defs>
+                          <linearGradient id="sentGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#e0e7ff" stopOpacity={0.8}/>
+                            <stop offset="100%" stopColor="#c7d2fe" stopOpacity={0.3}/>
+                          </linearGradient>
+                          <linearGradient id="openedGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#dbeafe" stopOpacity={0.8}/>
+                            <stop offset="100%" stopColor="#bfdbfe" stopOpacity={0.3}/>
+                          </linearGradient>
+                          <linearGradient id="repliedGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#d1fae5" stopOpacity={0.8}/>
+                            <stop offset="100%" stopColor="#a7f3d0" stopOpacity={0.3}/>
+                          </linearGradient>
+                        </defs>
                       </BarChart>
                     </ResponsiveContainer>
                   </CardContent>
@@ -137,15 +151,22 @@ const Analytics = () => {
                     <ResponsiveContainer width="100%" height={300}>
                       <LineChart data={responseData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
-                        <XAxis dataKey="name" stroke="#6b7280" />
-                        <YAxis stroke="#6b7280" />
+                        <XAxis dataKey="name" stroke="#9ca3af" fontSize={12} />
+                        <YAxis stroke="#9ca3af" fontSize={12} />
                         <Line 
                           type="monotone" 
                           dataKey="responses" 
-                          stroke="#374151" 
-                          strokeWidth={2}
-                          dot={{ fill: "#374151" }}
+                          stroke="url(#lineGradient)"
+                          strokeWidth={3}
+                          dot={{ fill: "#3b82f6", strokeWidth: 2, r: 4 }}
+                          activeDot={{ r: 6, stroke: "#3b82f6", strokeWidth: 2 }}
                         />
+                        <defs>
+                          <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stopColor="#60a5fa" />
+                            <stop offset="100%" stopColor="#3b82f6" />
+                          </linearGradient>
+                        </defs>
                       </LineChart>
                     </ResponsiveContainer>
                   </CardContent>
@@ -171,7 +192,12 @@ const Analytics = () => {
                           dataKey="value"
                         >
                           {pieData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
+                            <Cell 
+                              key={`cell-${index}`} 
+                              fill={entry.color}
+                              stroke="#ffffff"
+                              strokeWidth={2}
+                            />
                           ))}
                         </Pie>
                       </PieChart>
