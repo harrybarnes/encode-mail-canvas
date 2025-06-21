@@ -1,6 +1,7 @@
+
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Target, Users, Clock, Send, Mail, Edit, Save, X, Rocket, Pause, Loader, Check, AlertCircle } from "lucide-react";
+import { ArrowLeft, Target, Users, Clock, Send, Mail, Edit, Save, X, Rocket, Pause, Loader, Check, AlertCircle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Sidebar } from "@/components/dashboard/Sidebar";
@@ -13,6 +14,17 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface Lead {
   id: number;
@@ -158,6 +170,15 @@ export default function CampaignDetails() {
     setHasEmailTemplate(hasTemplate);
   };
 
+  const handleDeleteCampaign = () => {
+    toast({
+      title: "Campaign Deleted",
+      description: "Your campaign has been permanently deleted.",
+      variant: "destructive",
+    });
+    navigate("/");
+  };
+
   const hasSchedule = campaign.startDate && campaign.endDate;
   const canLaunchCampaign = campaign.stage === "draft" && hasEmailTemplate && leads.length > 0 && hasSchedule;
 
@@ -217,7 +238,7 @@ export default function CampaignDetails() {
               <Header />
               <main className="flex-1 p-6 space-y-6">
                 {/* Header with back button */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center justify-between">
                   <Button 
                     variant="ghost" 
                     onClick={() => navigate("/")}
@@ -226,6 +247,33 @@ export default function CampaignDetails() {
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Back to Dashboard
                   </Button>
+                  
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete Campaign
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="text-red-600">Delete Campaign</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you absolutely sure you want to delete "{campaign.name}"? This action cannot be undone. 
+                          All campaign data, email templates, lead lists, and analytics will be permanently removed.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction 
+                          onClick={handleDeleteCampaign}
+                          className="bg-red-600 hover:bg-red-700"
+                        >
+                          Yes, Delete Campaign
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
 
                 {/* Campaign Header */}

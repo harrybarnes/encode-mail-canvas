@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Calendar, Edit, Save, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DatePicker } from "@/components/ui/date-picker";
 
 interface CampaignScheduleSectionProps {
   startDate?: string;
@@ -14,36 +14,44 @@ interface CampaignScheduleSectionProps {
 
 export function CampaignScheduleSection({ startDate, endDate, onScheduleUpdate }: CampaignScheduleSectionProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [draftStartDate, setDraftStartDate] = useState(startDate || "");
-  const [draftEndDate, setDraftEndDate] = useState(endDate || "");
+  const [draftStartDate, setDraftStartDate] = useState<Date | undefined>(
+    startDate ? new Date(startDate) : undefined
+  );
+  const [draftEndDate, setDraftEndDate] = useState<Date | undefined>(
+    endDate ? new Date(endDate) : undefined
+  );
 
   const startEditing = () => {
-    const today = new Date().toISOString().split('T')[0];
-    const weekFromToday = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    const today = new Date();
+    const weekFromToday = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     
-    setDraftStartDate(startDate || today);
-    setDraftEndDate(endDate || weekFromToday);
+    setDraftStartDate(startDate ? new Date(startDate) : today);
+    setDraftEndDate(endDate ? new Date(endDate) : weekFromToday);
     setIsEditing(true);
   };
 
   const saveSchedule = () => {
-    onScheduleUpdate(draftStartDate, draftEndDate);
+    if (draftStartDate && draftEndDate) {
+      onScheduleUpdate(
+        draftStartDate.toISOString().split('T')[0], 
+        draftEndDate.toISOString().split('T')[0]
+      );
+    }
     setIsEditing(false);
   };
 
   const cancelEditing = () => {
-    setDraftStartDate(startDate || "");
-    setDraftEndDate(endDate || "");
+    setDraftStartDate(startDate ? new Date(startDate) : undefined);
+    setDraftEndDate(endDate ? new Date(endDate) : undefined);
     setIsEditing(false);
   };
 
-  const handleStartDateChange = (newStartDate: string) => {
+  const handleStartDateChange = (newStartDate: Date | undefined) => {
     setDraftStartDate(newStartDate);
     // Auto-update end date to 7 days after start date
     if (newStartDate) {
-      const startDateObj = new Date(newStartDate);
-      const endDateObj = new Date(startDateObj.getTime() + 7 * 24 * 60 * 60 * 1000);
-      setDraftEndDate(endDateObj.toISOString().split('T')[0]);
+      const endDateObj = new Date(newStartDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+      setDraftEndDate(endDateObj);
     }
   };
 
@@ -76,23 +84,21 @@ export function CampaignScheduleSection({ startDate, endDate, onScheduleUpdate }
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="start-date">Start Date</Label>
-                <Input
-                  id="start-date"
-                  type="date"
-                  value={draftStartDate}
-                  onChange={(e) => handleStartDateChange(e.target.value)}
-                  className="mt-1"
+                <Label htmlFor="start-date" className="mb-2 block">Start Date</Label>
+                <DatePicker
+                  date={draftStartDate}
+                  onSelect={handleStartDateChange}
+                  placeholder="Select start date"
+                  className="w-full"
                 />
               </div>
               <div>
-                <Label htmlFor="end-date">End Date</Label>
-                <Input
-                  id="end-date"
-                  type="date"
-                  value={draftEndDate}
-                  onChange={(e) => setDraftEndDate(e.target.value)}
-                  className="mt-1"
+                <Label htmlFor="end-date" className="mb-2 block">End Date</Label>
+                <DatePicker
+                  date={draftEndDate}
+                  onSelect={setDraftEndDate}
+                  placeholder="Select end date"
+                  className="w-full"
                 />
               </div>
             </div>
