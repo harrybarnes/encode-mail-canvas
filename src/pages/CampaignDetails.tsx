@@ -1,10 +1,10 @@
-
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Target, Users, Clock, Send } from "lucide-react";
+import { ArrowLeft, Target, Users, Clock, Send, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { Header } from "@/components/dashboard/Header";
+import { EmailTemplateSection } from "@/components/campaign/EmailTemplateSection";
 
 // Mock campaign data - in real app this would come from backend
 const mockCampaigns = [
@@ -166,6 +166,9 @@ export default function CampaignDetails() {
                   </div>
                 </div>
               </div>
+
+              {/* Email Template Section */}
+              <EmailTemplateSection campaign={campaign} />
 
               {/* Campaign Details */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
