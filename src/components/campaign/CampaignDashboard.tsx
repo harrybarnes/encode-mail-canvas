@@ -274,7 +274,7 @@ export function CampaignDashboard({ campaign, leads }: CampaignDashboardProps) {
         </CardContent>
       </Card>
 
-      <style>{`
+      <style jsx>{`
         @keyframes drawLine {
           from {
             stroke-dasharray: 0 1000;

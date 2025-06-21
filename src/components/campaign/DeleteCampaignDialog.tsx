@@ -58,10 +58,10 @@ export function DeleteCampaignDialog({ campaignName, onDelete }: DeleteCampaignD
             <Trash2 className="w-5 h-5" />
             Delete Campaign
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-gray-900">
+          <AlertDialogDescription className="text-gray-700">
             Are you sure you want to delete <strong>"{campaignName}"</strong>? 
             <br /><br />
-            <span className="text-gray-900 font-semibold">
+            <span className="text-red-600 font-semibold">
               This action cannot be undone. All campaign data, including emails sent, 
               replies received, and analytics will be permanently lost.
             </span>

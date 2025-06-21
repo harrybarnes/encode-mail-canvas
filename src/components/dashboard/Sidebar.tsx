@@ -67,9 +67,9 @@ export function Sidebar() {
                     <NavLink 
                       to={item.url} 
                       end 
-                      className={`${getNavCls({ isActive: isActive(item.url) })} rounded-lg px-3 py-2 transition-all duration-200 flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}
+                      className={`${getNavCls({ isActive: isActive(item.url) })} rounded-lg px-3 py-2 transition-all duration-200 flex items-center gap-3`}
                     >
-                      <item.icon className={`w-5 h-5 ${collapsed ? "" : ""}`} />
+                      <item.icon className={`w-5 h-5 ${collapsed ? "mx-auto" : ""}`} />
                       {!collapsed && (
                         <span className="font-medium">{item.title}</span>
                       )}
