@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Calendar, Edit, Save, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DatePicker } from "@/components/ui/date-picker";
 
 interface CampaignScheduleSectionProps {
   startDate?: string;
@@ -14,41 +14,49 @@ interface CampaignScheduleSectionProps {
 
 export function CampaignScheduleSection({ startDate, endDate, onScheduleUpdate }: CampaignScheduleSectionProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [draftStartDate, setDraftStartDate] = useState(startDate || "");
-  const [draftEndDate, setDraftEndDate] = useState(endDate || "");
+  const [draftStartDate, setDraftStartDate] = useState<Date | undefined>(
+    startDate ? new Date(startDate) : undefined
+  );
+  const [draftEndDate, setDraftEndDate] = useState<Date | undefined>(
+    endDate ? new Date(endDate) : undefined
+  );
 
   const startEditing = () => {
-    const today = new Date().toISOString().split('T')[0];
-    const weekFromToday = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    const today = new Date();
+    const weekFromToday = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     
-    setDraftStartDate(startDate || today);
-    setDraftEndDate(endDate || weekFromToday);
+    setDraftStartDate(startDate ? new Date(startDate) : today);
+    setDraftEndDate(endDate ? new Date(endDate) : weekFromToday);
     setIsEditing(true);
   };
 
   const saveSchedule = () => {
-    onScheduleUpdate(draftStartDate, draftEndDate);
+    if (draftStartDate && draftEndDate) {
+      onScheduleUpdate(
+        draftStartDate.toISOString().split('T')[0],
+        draftEndDate.toISOString().split('T')[0]
+      );
+    }
     setIsEditing(false);
   };
 
   const cancelEditing = () => {
-    setDraftStartDate(startDate || "");
-    setDraftEndDate(endDate || "");
+    setDraftStartDate(startDate ? new Date(startDate) : undefined);
+    setDraftEndDate(endDate ? new Date(endDate) : undefined);
     setIsEditing(false);
   };
 
-  const handleStartDateChange = (newStartDate: string) => {
+  const handleStartDateChange = (newStartDate: Date | undefined) => {
     setDraftStartDate(newStartDate);
     // Auto-update end date to 7 days after start date
     if (newStartDate) {
-      const startDateObj = new Date(newStartDate);
-      const endDateObj = new Date(startDateObj.getTime() + 7 * 24 * 60 * 60 * 1000);
-      setDraftEndDate(endDateObj.toISOString().split('T')[0]);
+      const endDateObj = new Date(newStartDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+      setDraftEndDate(endDateObj);
     }
   };
 
   return (
-    <Card>
+    <Card className="transition-all hover:shadow-md">
       <CardHeader>
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600">
@@ -64,56 +72,54 @@ export function CampaignScheduleSection({ startDate, endDate, onScheduleUpdate }
       </CardHeader>
       <CardContent>
         {!startDate && !endDate && !isEditing ? (
-          <div className="text-center py-8 bg-gray-50 rounded-lg">
+          <div className="text-center py-8 bg-gray-50 rounded-lg transition-all hover:bg-gray-100">
             <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-3" />
             <p className="text-gray-600 mb-4">No schedule configured</p>
-            <Button onClick={startEditing} variant="outline">
+            <Button onClick={startEditing} variant="outline" className="transition-all hover:scale-105">
               <Calendar className="w-4 h-4 mr-2" />
               Set Schedule
             </Button>
           </div>
         ) : isEditing ? (
-          <div className="space-y-4">
+          <div className="space-y-4 animate-fade-in">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="start-date">Start Date</Label>
-                <Input
-                  id="start-date"
-                  type="date"
-                  value={draftStartDate}
-                  onChange={(e) => handleStartDateChange(e.target.value)}
+                <DatePicker
+                  date={draftStartDate}
+                  onDateChange={handleStartDateChange}
+                  placeholder="Select start date"
                   className="mt-1"
                 />
               </div>
               <div>
                 <Label htmlFor="end-date">End Date</Label>
-                <Input
-                  id="end-date"
-                  type="date"
-                  value={draftEndDate}
-                  onChange={(e) => setDraftEndDate(e.target.value)}
+                <DatePicker
+                  date={draftEndDate}
+                  onDateChange={setDraftEndDate}
+                  placeholder="Select end date"
                   className="mt-1"
                 />
               </div>
             </div>
             <div className="flex gap-3">
-              <Button onClick={saveSchedule} className="bg-green-600 hover:bg-green-700">
+              <Button onClick={saveSchedule} className="bg-green-600 hover:bg-green-700 transition-all hover:scale-105">
                 <Save className="w-4 h-4 mr-2" />
                 Save Schedule
               </Button>
-              <Button onClick={cancelEditing} variant="outline">
+              <Button onClick={cancelEditing} variant="outline" className="transition-all hover:scale-105">
                 <X className="w-4 h-4 mr-2" />
                 Cancel
               </Button>
             </div>
           </div>
         ) : (
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center animate-fade-in">
             <div className="space-y-1">
               <p className="text-sm text-gray-600">Start Date: <span className="font-medium">{new Date(startDate!).toLocaleDateString()}</span></p>
               <p className="text-sm text-gray-600">End Date: <span className="font-medium">{new Date(endDate!).toLocaleDateString()}</span></p>
             </div>
-            <Button onClick={startEditing} variant="outline">
+            <Button onClick={startEditing} variant="outline" className="transition-all hover:scale-105">
               <Edit className="w-4 h-4 mr-2" />
               Edit Schedule
             </Button>
