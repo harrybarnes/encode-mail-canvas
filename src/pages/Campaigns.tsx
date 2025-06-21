@@ -102,6 +102,26 @@ const getStageColor = (stage: string) => {
   }
 };
 
+const getBadgeVariant = (stage: string) => {
+  switch (stage) {
+    case "active": return "default";
+    case "completed": return "secondary";
+    case "paused": return "outline";
+    case "draft": return "outline";
+    default: return "outline";
+  }
+};
+
+const getBadgeClassName = (stage: string) => {
+  switch (stage) {
+    case "active": return "bg-blue-500 text-white hover:bg-blue-600";
+    case "completed": return "bg-green-500 text-white hover:bg-green-600";
+    case "paused": return "bg-yellow-500 text-white hover:bg-yellow-600";
+    case "draft": return "bg-gray-500 text-white hover:bg-gray-600";
+    default: return "";
+  }
+};
+
 export default function Campaigns() {
   const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
   const [searchTerm, setSearchTerm] = useState("");
@@ -307,11 +327,10 @@ export default function Campaigns() {
                               <div className={`p-2 rounded-lg ${getStageColor(campaign.stage)}`}>
                                 <StageIcon className="w-4 h-4" />
                               </div>
-                              <Badge variant={
-                                campaign.stage === "active" ? "default" :
-                                campaign.stage === "completed" ? "secondary" :
-                                "outline"
-                              }>
+                              <Badge 
+                                variant={getBadgeVariant(campaign.stage)}
+                                className={getBadgeClassName(campaign.stage)}
+                              >
                                 {campaign.status}
                               </Badge>
                             </div>
@@ -353,6 +372,7 @@ export default function Campaigns() {
                     })}
                   </div>
 
+                  {/* Empty state */}
                   {filteredCampaigns.length === 0 && (
                     <div className="text-center py-12">
                       <Target className="w-12 h-12 text-gray-300 mx-auto mb-4" />
