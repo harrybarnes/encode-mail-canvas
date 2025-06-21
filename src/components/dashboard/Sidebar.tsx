@@ -43,35 +43,35 @@ export function Sidebar() {
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive 
-      ? "bg-gray-900 text-white hover:bg-gray-800" 
-      : "hover:bg-gray-100/80 text-gray-700 hover:text-gray-900";
+      ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600" 
+      : "hover:bg-gray-100 text-gray-700";
 
   return (
     <SidebarUI
-      className={`${collapsed ? "w-14" : "w-64"} border-r border-gray-200/50 bg-white/95 backdrop-blur-sm transition-all duration-300`}
+      className={`${collapsed ? "w-14" : "w-64"} border-r border-gray-200 bg-white transition-all duration-300`}
       collapsible="icon"
     >
-      <SidebarTrigger className="m-2 self-end hover:bg-gray-100/80 rounded-xl" />
+      <SidebarTrigger className="m-2 self-end hover:bg-gray-100" />
 
       <SidebarContent className="px-3">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-gray-500 font-semibold mb-3 text-xs uppercase tracking-wider">
+          <SidebarGroupLabel className="text-gray-500 font-medium mb-2">
             {!collapsed && "Navigation"}
           </SidebarGroupLabel>
 
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-2">
+            <SidebarMenu className="space-y-1">
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink 
                       to={item.url} 
                       end 
-                      className={`${getNavCls({ isActive: isActive(item.url) })} rounded-xl px-3 py-3 transition-all duration-200 flex items-center font-medium ${collapsed ? 'justify-center' : 'gap-3'}`}
+                      className={`${getNavCls({ isActive: isActive(item.url) })} rounded-lg px-3 py-2 transition-all duration-200 flex items-center ${collapsed ? 'justify-center' : 'gap-3'}`}
                     >
                       <item.icon className="w-5 h-5" />
                       {!collapsed && (
-                        <span>{item.title}</span>
+                        <span className="font-medium">{item.title}</span>
                       )}
                     </NavLink>
                   </SidebarMenuButton>
