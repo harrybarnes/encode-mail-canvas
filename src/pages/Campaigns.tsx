@@ -17,10 +17,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCampaigns } from "@/hooks/useCampaigns";
 
 interface Campaign {
-  id: string;
+  id: number;
   name: string;
   stage: string;
   sent: number;
@@ -31,6 +30,57 @@ interface Campaign {
   createdAt: string;
   replyRate: number;
 }
+
+const initialCampaigns: Campaign[] = [
+  {
+    id: 1,
+    name: "Product Demo Outreach",
+    stage: "active",
+    sent: 45,
+    replies: 8,
+    status: "In Progress",
+    goal: "Get 10 product demos",
+    progress: 80,
+    createdAt: "2024-01-15",
+    replyRate: 17.8,
+  },
+  {
+    id: 2,
+    name: "Partnership Proposals", 
+    stage: "draft",
+    sent: 0,
+    replies: 0,
+    status: "Draft",
+    goal: "Secure 3 partnerships",
+    progress: 20,
+    createdAt: "2024-01-20",
+    replyRate: 0,
+  },
+  {
+    id: 3,
+    name: "Investor Outreach",
+    stage: "paused",
+    sent: 120,
+    replies: 15,
+    status: "Paused",
+    goal: "Connect with 20 investors",
+    progress: 60,
+    createdAt: "2024-01-10",
+    replyRate: 12.5,
+  },
+  {
+    id: 4,
+    name: "Customer Success",
+    stage: "completed",
+    sent: 200,
+    replies: 45,
+    status: "Completed",
+    goal: "Improve retention by 15%",
+    progress: 100,
+    createdAt: "2024-01-05",
+    replyRate: 22.5,
+  },
+];
 
 const getStageIcon = (stage: string) => {
   switch (stage) {
@@ -73,15 +123,32 @@ const getBadgeClassName = (stage: string) => {
 };
 
 export default function Campaigns() {
-  const { data: campaigns = [], isLoading } = useCampaigns();
-  
+  const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("recent");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleCampaignClick = (campaignId: string) => {
+  const handleCreateCampaign = (campaignData: { name: string; goal: string; audience: string }) => {
+    const newCampaign: Campaign = {
+      id: Math.max(...campaigns.map(c => c.id)) + 1,
+      name: campaignData.name,
+      stage: "draft",
+      sent: 0,
+      replies: 0,
+      status: "Draft",
+      goal: campaignData.goal,
+      progress: 0,
+      createdAt: new Date().toISOString().split('T')[0],
+      replyRate: 0,
+    };
+
+    setCampaigns([newCampaign, ...campaigns]);
+    setIsDialogOpen(false);
+  };
+
+  const handleCampaignClick = (campaignId: number) => {
     navigate(`/campaign/${campaignId}`);
   };
 
@@ -134,7 +201,8 @@ export default function Campaigns() {
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-md">
                     <NewCampaignForm
-                      onFormSubmit={() => setIsDialogOpen(false)}
+                      onSubmit={handleCreateCampaign}
+                      onCancel={() => setIsDialogOpen(false)}
                     />
                   </DialogContent>
                 </Dialog>
