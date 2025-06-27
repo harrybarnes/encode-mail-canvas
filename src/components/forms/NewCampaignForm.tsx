@@ -1,3 +1,4 @@
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -9,7 +10,6 @@ import { DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/componen
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useCreateCampaign } from "@/hooks/useCampaigns";
 import { toast } from "sonner";
-
 
 const campaignFormSchema = z.object({
   name: z.string().min(3, "Campaign name must be at least 3 characters."),
@@ -36,7 +36,14 @@ export function NewCampaignForm({ onFormSubmit }: NewCampaignFormProps) {
   });
 
   const onSubmit = (data: CampaignFormValues) => {
-    createCampaignMutation.mutate(data, {
+    // Since we're using Zod validation, we know the data is valid and complete
+    const campaignData = {
+      name: data.name,
+      goal: data.goal,
+      audience_description: data.audience_description,
+    };
+    
+    createCampaignMutation.mutate(campaignData, {
       onSuccess: () => {
         toast.success("Campaign created successfully!");
         onFormSubmit(); // Close the dialog on success
