@@ -67,17 +67,17 @@ const Inbox = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-gray-50 w-full">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 w-full">
         <div className="flex w-full">
           <Sidebar />
           <div className="flex-1 flex flex-col">
             <Header />
             <main className="flex-1 p-6">
               <div className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                   Inbox
                 </h1>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   Manage your email responses and conversations
                 </p>
               </div>
@@ -85,10 +85,10 @@ const Inbox = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-12rem)]">
                 {/* Email List */}
                 <div className="lg:col-span-1">
-                  <Card className="border-0 shadow-sm h-full">
+                  <Card className="border-0 shadow-sm h-full dark:bg-gray-800">
                     <CardHeader className="pb-4">
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-lg font-semibold text-gray-900">
+                        <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                           Messages
                         </CardTitle>
                         <div className="flex items-center gap-2">
@@ -107,7 +107,7 @@ const Inbox = () => {
                           placeholder="Search emails..."
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
-                          className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent transition-all"
+                          className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:bg-white dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 focus:border-transparent transition-all"
                         />
                       </div>
                     </CardHeader>
@@ -117,25 +117,25 @@ const Inbox = () => {
                           <div
                             key={email.id}
                             onClick={() => setSelectedEmail(email)}
-                            className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
-                              selectedEmail.id === email.id ? 'bg-gray-100' : ''
-                            } ${!email.isRead ? 'bg-blue-50' : ''}`}
+                            className={`p-4 border-b border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
+                              selectedEmail.id === email.id ? 'bg-gray-100 dark:bg-gray-700' : ''
+                            } ${!email.isRead ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
                           >
                             <div className="flex items-start justify-between mb-2">
                               <div className="flex items-center gap-2">
                                 {email.isStarred && (
                                   <Star className="w-4 h-4 text-yellow-500 fill-current" />
                                 )}
-                                <span className={`text-sm ${!email.isRead ? 'font-semibold text-gray-900' : 'text-gray-700'}`}>
+                                <span className={`text-sm ${!email.isRead ? 'font-semibold text-gray-900 dark:text-gray-100' : 'text-gray-700 dark:text-gray-300'}`}>
                                   {email.from}
                                 </span>
                               </div>
-                              <span className="text-xs text-gray-500">{email.time}</span>
+                              <span className="text-xs text-gray-500 dark:text-gray-400">{email.time}</span>
                             </div>
-                            <div className={`text-sm mb-2 ${!email.isRead ? 'font-medium text-gray-900' : 'text-gray-700'}`}>
+                            <div className={`text-sm mb-2 ${!email.isRead ? 'font-medium text-gray-900 dark:text-gray-100' : 'text-gray-700 dark:text-gray-300'}`}>
                               {email.subject}
                             </div>
-                            <div className="text-xs text-gray-500 line-clamp-2 mb-2">
+                            <div className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mb-2">
                               {email.preview}
                             </div>
                             <Badge variant="secondary" className="text-xs">
@@ -150,14 +150,14 @@ const Inbox = () => {
 
                 {/* Email Content */}
                 <div className="lg:col-span-2">
-                  <Card className="border-0 shadow-sm h-full">
-                    <CardHeader className="border-b border-gray-100">
+                  <Card className="border-0 shadow-sm h-full dark:bg-gray-800">
+                    <CardHeader className="border-b border-gray-100 dark:border-gray-700">
                       <div className="flex items-center justify-between">
                         <div>
-                          <CardTitle className="text-lg font-semibold text-gray-900">
+                          <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                             {selectedEmail.subject}
                           </CardTitle>
-                          <p className="text-sm text-gray-600 mt-1">
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                             From: {selectedEmail.from} • {selectedEmail.time}
                           </p>
                         </div>
@@ -176,7 +176,7 @@ const Inbox = () => {
                         <Badge variant="secondary" className="mb-4">
                           Campaign: {selectedEmail.campaign}
                         </Badge>
-                        <div className="prose max-w-none text-gray-700">
+                        <div className="prose max-w-none text-gray-700 dark:text-gray-300">
                           <p className="mb-4">Hi there,</p>
                           <p className="mb-4">{selectedEmail.preview}</p>
                           <p className="mb-4">
@@ -195,9 +195,9 @@ const Inbox = () => {
                         </div>
                       </div>
                       
-                      <div className="border-t border-gray-100 pt-6">
+                      <div className="border-t border-gray-100 dark:border-gray-700 pt-6">
                         <div className="flex items-center gap-2 mb-4">
-                          <Button className="bg-gray-900 text-white hover:bg-gray-800">
+                          <Button className="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200">
                             <Reply className="w-4 h-4 mr-2" />
                             Reply
                           </Button>
@@ -208,7 +208,7 @@ const Inbox = () => {
                         </div>
                         <textarea
                           placeholder="Type your reply..."
-                          className="w-full h-32 p-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent"
+                          className="w-full h-32 p-3 border border-gray-200 dark:border-gray-700 rounded-lg resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 focus:border-transparent"
                         />
                       </div>
                     </CardContent>

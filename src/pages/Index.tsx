@@ -10,7 +10,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 const Index = () => {
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-slate-50 w-full">
+      <div className="min-h-screen bg-slate-50 dark:bg-gray-900 w-full">
         <div className="flex w-full">
           <Sidebar />
           <div className="flex-1 flex flex-col">
@@ -18,10 +18,10 @@ const Index = () => {
             <main className="flex-1 p-6 space-y-6">
               {/* Welcome Section */}
               <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                   Welcome back, Alex 👋
                 </h1>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   Track your cold email campaigns and optimize your outreach strategy
                 </p>
               </div>
