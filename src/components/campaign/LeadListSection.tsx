@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Users, Sparkles, Edit, Save, X, Trash2, Plus } from "lucide-react";
+import { Users, Sparkles, Edit, Save, X, Trash2, Plus, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -29,8 +29,17 @@ export function LeadListSection({ campaign, onLeadsUpdate }: LeadListSectionProp
   const [leads, setLeads] = useState<Lead[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isManualDialogOpen, setIsManualDialogOpen] = useState(false);
   const [audienceSize, setAudienceSize] = useState(50);
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
+  
+  // Manual lead entry form state
+  const [manualLead, setManualLead] = useState({
+    name: "",
+    email: "",
+    company: "",
+    title: ""
+  });
 
   const generateLeads = async () => {
     setIsGenerating(true);
@@ -50,6 +59,31 @@ export function LeadListSection({ campaign, onLeadsUpdate }: LeadListSectionProp
     onLeadsUpdate(generatedLeads);
     setIsGenerating(false);
     setIsDialogOpen(false);
+  };
+
+  const addManualLead = () => {
+    if (!manualLead.name || !manualLead.email || !manualLead.company || !manualLead.title) {
+      return; // Don't add if any field is empty
+    }
+
+    const newLead: Lead = {
+      id: Date.now(), // Simple ID generation
+      ...manualLead
+    };
+
+    const updatedLeads = [...leads, newLead];
+    setLeads(updatedLeads);
+    onLeadsUpdate(updatedLeads);
+    
+    // Reset form
+    setManualLead({
+      name: "",
+      email: "",
+      company: "",
+      title: ""
+    });
+    
+    setIsManualDialogOpen(false);
   };
 
   const deleteLead = (leadId: number) => {
@@ -92,72 +126,21 @@ export function LeadListSection({ campaign, onLeadsUpdate }: LeadListSectionProp
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
               Generate a targeted list of leads based on your campaign audience: {campaign.audience}
             </p>
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Generate Leads
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Generate Target Leads</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="audience-size">Number of leads to generate</Label>
-                    <Input
-                      id="audience-size"
-                      type="number"
-                      value={audienceSize}
-                      onChange={(e) => setAudienceSize(parseInt(e.target.value))}
-                      min={1}
-                      max={500}
-                      className="mt-1"
-                    />
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    AI will find leads matching: {campaign.audience}
-                  </p>
-                  <Button 
-                    onClick={generateLeads}
-                    disabled={isGenerating}
-                    className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-                  >
-                    {isGenerating ? (
-                      <>
-                        <Sparkles className="w-4 h-4 mr-2 animate-spin" />
-                        Generating {audienceSize} leads...
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="w-4 h-4 mr-2" />
-                        Generate {audienceSize} Leads
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Generated Leads ({leads.length})</h3>
+            <div className="flex gap-3 justify-center">
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="outline">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Generate More
+                  <Button className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Generate Leads
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Generate More Leads</DialogTitle>
+                    <DialogTitle>Generate Target Leads</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="audience-size">Number of additional leads</Label>
+                      <Label htmlFor="audience-size">Number of leads to generate</Label>
                       <Input
                         id="audience-size"
                         type="number"
@@ -168,6 +151,9 @@ export function LeadListSection({ campaign, onLeadsUpdate }: LeadListSectionProp
                         className="mt-1"
                       />
                     </div>
+                    <p className="text-sm text-gray-600">
+                      AI will find leads matching: {campaign.audience}
+                    </p>
                     <Button 
                       onClick={generateLeads}
                       disabled={isGenerating}
@@ -176,18 +162,200 @@ export function LeadListSection({ campaign, onLeadsUpdate }: LeadListSectionProp
                       {isGenerating ? (
                         <>
                           <Sparkles className="w-4 h-4 mr-2 animate-spin" />
-                          Generating...
+                          Generating {audienceSize} leads...
                         </>
                       ) : (
                         <>
                           <Sparkles className="w-4 h-4 mr-2" />
-                          Generate {audienceSize} More Leads
+                          Generate {audienceSize} Leads
                         </>
                       )}
                     </Button>
                   </div>
                 </DialogContent>
               </Dialog>
+
+              <Dialog open={isManualDialogOpen} onOpenChange={setIsManualDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline">
+                    <UserPlus className="w-4 h-4 mr-2" />
+                    Add Manually
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add Lead Manually</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="manual-name">Name</Label>
+                      <Input
+                        id="manual-name"
+                        value={manualLead.name}
+                        onChange={(e) => setManualLead({...manualLead, name: e.target.value})}
+                        placeholder="Enter lead name..."
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="manual-email">Email</Label>
+                      <Input
+                        id="manual-email"
+                        type="email"
+                        value={manualLead.email}
+                        onChange={(e) => setManualLead({...manualLead, email: e.target.value})}
+                        placeholder="Enter email address..."
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="manual-company">Company</Label>
+                      <Input
+                        id="manual-company"
+                        value={manualLead.company}
+                        onChange={(e) => setManualLead({...manualLead, company: e.target.value})}
+                        placeholder="Enter company name..."
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="manual-title">Title</Label>
+                      <Input
+                        id="manual-title"
+                        value={manualLead.title}
+                        onChange={(e) => setManualLead({...manualLead, title: e.target.value})}
+                        placeholder="Enter job title..."
+                        className="mt-1"
+                      />
+                    </div>
+                    <Button 
+                      onClick={addManualLead}
+                      disabled={!manualLead.name || !manualLead.email || !manualLead.company || !manualLead.title}
+                      className="w-full"
+                    >
+                      <UserPlus className="w-4 h-4 mr-2" />
+                      Add Lead
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">Generated Leads ({leads.length})</h3>
+              <div className="flex gap-2">
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Generate More
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Generate More Leads</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="audience-size">Number of additional leads</Label>
+                        <Input
+                          id="audience-size"
+                          type="number"
+                          value={audienceSize}
+                          onChange={(e) => setAudienceSize(parseInt(e.target.value))}
+                          min={1}
+                          max={500}
+                          className="mt-1"
+                        />
+                      </div>
+                      <Button 
+                        onClick={generateLeads}
+                        disabled={isGenerating}
+                        className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+                      >
+                        {isGenerating ? (
+                          <>
+                            <Sparkles className="w-4 h-4 mr-2 animate-spin" />
+                            Generating...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="w-4 h-4 mr-2" />
+                            Generate {audienceSize} More Leads
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
+                <Dialog open={isManualDialogOpen} onOpenChange={setIsManualDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline">
+                      <UserPlus className="w-4 h-4 mr-2" />
+                      Add Manually
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add Lead Manually</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="manual-name">Name</Label>
+                        <Input
+                          id="manual-name"
+                          value={manualLead.name}
+                          onChange={(e) => setManualLead({...manualLead, name: e.target.value})}
+                          placeholder="Enter lead name..."
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="manual-email">Email</Label>
+                        <Input
+                          id="manual-email"
+                          type="email"
+                          value={manualLead.email}
+                          onChange={(e) => setManualLead({...manualLead, email: e.target.value})}
+                          placeholder="Enter email address..."
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="manual-company">Company</Label>
+                        <Input
+                          id="manual-company"
+                          value={manualLead.company}
+                          onChange={(e) => setManualLead({...manualLead, company: e.target.value})}
+                          placeholder="Enter company name..."
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="manual-title">Title</Label>
+                        <Input
+                          id="manual-title"
+                          value={manualLead.title}
+                          onChange={(e) => setManualLead({...manualLead, title: e.target.value})}
+                          placeholder="Enter job title..."
+                          className="mt-1"
+                        />
+                      </div>
+                      <Button 
+                        onClick={addManualLead}
+                        disabled={!manualLead.name || !manualLead.email || !manualLead.company || !manualLead.title}
+                        className="w-full"
+                      >
+                        <UserPlus className="w-4 h-4 mr-2" />
+                        Add Lead
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </div>
             
             <div className="max-h-96 overflow-y-auto space-y-2">
