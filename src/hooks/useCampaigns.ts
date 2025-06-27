@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 
@@ -44,7 +45,8 @@ export const useCreateCampaign = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (newCampaign) => api.createCampaign(newCampaign),
+    mutationFn: (newCampaign: { name: string; goal: string; audience_description: string }) => 
+      api.createCampaign(newCampaign),
     onSuccess: () => {
       // When a campaign is created, invalidate the 'campaigns' query
       // to refetch the list and show the new campaign.
@@ -55,4 +57,4 @@ export const useCreateCampaign = () => {
       console.error("Error creating campaign:", error);
     }
   });
-}; 
+};

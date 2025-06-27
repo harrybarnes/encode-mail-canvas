@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { createSupabaseClient } from '@/lib/supabaseClient';
 import { Session } from '@supabase/supabase-js';
@@ -26,8 +27,10 @@ export const useAuth = () => {
   return {
     session,
     loading,
-    signUp: (args: any) => supabase.auth.signUp(args),
-    signIn: (args: any) => supabase.auth.signInWithPassword(args),
+    signUp: (email: string, password: string, options?: any) => 
+      supabase.auth.signUp({ email, password, options }),
+    signIn: (email: string, password: string) => 
+      supabase.auth.signInWithPassword({ email, password }),
     signInWithGoogle: () => supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -36,4 +39,4 @@ export const useAuth = () => {
     }),
     signOut: () => supabase.auth.signOut(),
   };
-}; 
+};
