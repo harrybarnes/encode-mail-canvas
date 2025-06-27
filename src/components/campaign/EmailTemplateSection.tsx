@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Mail, Sparkles, Edit, Save, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface Campaign {
@@ -19,8 +20,10 @@ interface EmailTemplateSectionProps {
 
 export function EmailTemplateSection({ campaign, onTemplateChange }: EmailTemplateSectionProps) {
   const [emailTemplate, setEmailTemplate] = useState<string | null>(null);
+  const [emailSubject, setEmailSubject] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [draftTemplate, setDraftTemplate] = useState("");
+  const [draftSubject, setDraftSubject] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
 
   const generateTemplate = async () => {
@@ -29,9 +32,8 @@ export function EmailTemplateSection({ campaign, onTemplateChange }: EmailTempla
     // Simulate API call to generate email template
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    const generatedTemplate = `Subject: Quick question about ${campaign.goal.toLowerCase()}
-
-Hi [First Name],
+    const generatedSubject = `Quick question about ${campaign.goal.toLowerCase()}`;
+    const generatedTemplate = `Hi [First Name],
 
 I hope this email finds you well. I noticed that your company might be a great fit for what we're working on.
 
@@ -46,23 +48,27 @@ Best regards,
 
 P.S. I'd be happy to send over some case studies from similar companies we've worked with.`;
     
+    setDraftSubject(generatedSubject);
     setDraftTemplate(generatedTemplate);
     setIsEditing(true);
     setIsGenerating(false);
   };
 
   const saveTemplate = () => {
+    setEmailSubject(draftSubject);
     setEmailTemplate(draftTemplate);
     setIsEditing(false);
     onTemplateChange?.(true);
   };
 
   const cancelEditing = () => {
+    setDraftSubject(emailSubject || "");
     setDraftTemplate(emailTemplate || "");
     setIsEditing(false);
   };
 
   const startEditing = () => {
+    setDraftSubject(emailSubject || "");
     setDraftTemplate(emailTemplate || "");
     setIsEditing(true);
   };
@@ -117,6 +123,17 @@ P.S. I'd be happy to send over some case studies from similar companies we've wo
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
+                Subject Line
+              </label>
+              <Input
+                value={draftSubject}
+                onChange={(e) => setDraftSubject(e.target.value)}
+                placeholder="Enter email subject line..."
+                className="mb-4"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email Template
               </label>
               <Textarea
@@ -142,9 +159,22 @@ P.S. I'd be happy to send over some case studies from similar companies we've wo
           // Display saved template
           <div className="space-y-4">
             <div className="bg-gray-50 rounded-lg p-4">
-              <pre className="whitespace-pre-wrap text-sm text-gray-800 font-mono">
-                {emailTemplate}
-              </pre>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Subject Line
+                </label>
+                <div className="bg-white border rounded-md p-3 text-sm font-medium">
+                  {emailSubject}
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Template
+                </label>
+                <pre className="whitespace-pre-wrap text-sm text-gray-800 font-mono bg-white border rounded-md p-3">
+                  {emailTemplate}
+                </pre>
+              </div>
             </div>
             <div className="flex gap-3">
               <Button onClick={startEditing} variant="outline">
