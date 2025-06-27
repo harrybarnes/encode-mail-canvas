@@ -85,17 +85,17 @@ const Contacts = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 w-full">
+      <div className="min-h-screen bg-gray-50 w-full">
         <div className="flex w-full">
           <Sidebar />
           <div className="flex-1 flex flex-col">
             <Header />
             <main className="flex-1 p-6">
               <div className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
                   Contacts
                 </h1>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-gray-600">
                   Manage your contact database and outreach targets
                 </p>
               </div>
@@ -109,13 +109,13 @@ const Contacts = () => {
                       placeholder="Search contacts..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 focus:border-transparent w-full sm:w-80"
+                      className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent w-full sm:w-80"
                     />
                   </div>
                   <select
                     value={selectedStatus}
                     onChange={(e) => setSelectedStatus(e.target.value)}
-                    className="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 focus:border-transparent"
+                    className="px-4 py-2 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent"
                   >
                     <option value="All">All Status</option>
                     <option value="Active">Active</option>
@@ -123,27 +123,27 @@ const Contacts = () => {
                     <option value="Inactive">Inactive</option>
                   </select>
                 </div>
-                <Button className="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200">
+                <Button className="bg-gray-900 text-white hover:bg-gray-800">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Contact
                 </Button>
               </div>
 
-              <Card className="border-0 shadow-sm dark:bg-gray-800">
+              <Card className="border-0 shadow-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  <CardTitle className="text-lg font-semibold text-gray-900">
                     Contact Directory ({filteredContacts.length} contacts)
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-0">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredContacts.map((contact) => (
-                      <Card key={contact.id} className="border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow dark:bg-gray-800">
+                      <Card key={contact.id} className="border border-gray-200 hover:shadow-md transition-shadow">
                         <CardContent className="p-4">
                           <div className="flex items-start justify-between mb-3">
                             <div>
-                              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">{contact.name}</h3>
-                              <p className="text-sm text-gray-600 dark:text-gray-400">{contact.position}</p>
+                              <h3 className="font-semibold text-gray-900 mb-1">{contact.name}</h3>
+                              <p className="text-sm text-gray-600">{contact.position}</p>
                             </div>
                             <div className="flex items-center gap-1">
                               <Badge 
@@ -159,26 +159,26 @@ const Contacts = () => {
                           </div>
                           
                           <div className="space-y-2 mb-4">
-                            <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                              <Building className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500" />
+                            <div className="flex items-center text-sm text-gray-600">
+                              <Building className="w-4 h-4 mr-2 text-gray-400" />
                               {contact.company}
                             </div>
-                            <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                              <Mail className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500" />
+                            <div className="flex items-center text-sm text-gray-600">
+                              <Mail className="w-4 h-4 mr-2 text-gray-400" />
                               {contact.email}
                             </div>
-                            <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                              <Phone className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500" />
+                            <div className="flex items-center text-sm text-gray-600">
+                              <Phone className="w-4 h-4 mr-2 text-gray-400" />
                               {contact.phone}
                             </div>
-                            <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                              <MapPin className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500" />
+                            <div className="flex items-center text-sm text-gray-600">
+                              <MapPin className="w-4 h-4 mr-2 text-gray-400" />
                               {contact.location}
                             </div>
                           </div>
 
                           <div className="mb-4">
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Campaigns:</p>
+                            <p className="text-xs text-gray-500 mb-2">Campaigns:</p>
                             <div className="flex flex-wrap gap-1">
                               {contact.campaigns.map((campaign, index) => (
                                 <Badge key={index} variant="outline" className="text-xs">
@@ -189,7 +189,7 @@ const Contacts = () => {
                           </div>
 
                           <div className="flex items-center justify-between">
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                            <p className="text-xs text-gray-500">
                               Last contact: {contact.lastContact}
                             </p>
                             <div className="flex items-center gap-1">
