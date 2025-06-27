@@ -47,16 +47,21 @@ export function LeadListSection({ campaign, onLeadsUpdate }: LeadListSectionProp
     // Simulate AI lead generation
     await new Promise(resolve => setTimeout(resolve, 3000));
     
+    // Get the highest existing ID to continue numbering
+    const maxId = leads.length > 0 ? Math.max(...leads.map(lead => lead.id)) : 0;
+    
     const generatedLeads: Lead[] = Array.from({ length: audienceSize }, (_, i) => ({
-      id: i + 1,
-      name: `Lead ${i + 1}`,
-      email: `lead${i + 1}@company${Math.floor(i / 3) + 1}.com`,
-      company: `Company ${Math.floor(i / 3) + 1}`,
-      title: ['CEO', 'CTO', 'VP Sales', 'Marketing Director'][i % 4]
+      id: maxId + i + 1,
+      name: `Lead ${maxId + i + 1}`,
+      email: `lead${maxId + i + 1}@company${Math.floor((maxId + i) / 3) + 1}.com`,
+      company: `Company ${Math.floor((maxId + i) / 3) + 1}`,
+      title: ['CEO', 'CTO', 'VP Sales', 'Marketing Director'][(maxId + i) % 4]
     }));
     
-    setLeads(generatedLeads);
-    onLeadsUpdate(generatedLeads);
+    // Append new leads to existing ones instead of replacing
+    const updatedLeads = [...leads, ...generatedLeads];
+    setLeads(updatedLeads);
+    onLeadsUpdate(updatedLeads);
     setIsGenerating(false);
     setIsDialogOpen(false);
   };
